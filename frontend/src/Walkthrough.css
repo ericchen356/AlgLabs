@@ -1,0 +1,349 @@
+/* Walkthrough — Paper Toy treatment (handoff README §5 + prototype values).
+   Imported from Walkthrough.tsx, i.e. after App.css, so it wins any
+   equal-specificity conflict with the temporary re-tokened rules there. */
+
+.walkthrough {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* ---------- left: cube stage ---------- */
+
+.walk-stage {
+  flex: 1;
+  min-width: 320px;
+  min-height: 360px;
+  position: relative;
+  border: 1px solid #ddd2bb;
+  border-radius: 16px;
+  background: var(--bar);
+  background-image: radial-gradient(#2b262018 1.5px, transparent 0);
+  background-size: 15px 15px;
+  overflow: hidden;
+}
+
+.walk-stage .cube-view {
+  position: absolute;
+  inset: 0;
+}
+
+.walk-caption {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  z-index: 2;
+  font: 400 10px var(--mono);
+  color: var(--dim);
+  pointer-events: none;
+}
+
+/* ---------- right: 320px panel ---------- */
+
+.walk-panel {
+  width: 320px;
+  flex: none;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px -12px #2b262055;
+}
+
+.walk-panel-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.walk-exit {
+  font: 400 11px var(--mono);
+  color: var(--dim);
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.walk-exit:hover {
+  color: var(--ink);
+}
+
+.walk-counter {
+  font: 400 11px var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--dim);
+}
+
+/* ---------- stage badge + current step ---------- */
+
+.walk-current {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.walk-badge {
+  align-self: flex-start;
+  font: 700 10px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 5px;
+  background: var(--ink);
+  color: #fff;
+}
+
+.walk-badge.walk-stage-cross {
+  background: var(--stage-cross);
+  color: #fff;
+}
+
+.walk-badge.walk-stage-f2l {
+  background: var(--stage-f2l);
+  color: #fff;
+}
+
+.walk-badge.walk-stage-oll {
+  background: var(--stage-oll);
+  color: var(--ink);
+}
+
+.walk-badge.walk-stage-pll {
+  background: var(--stage-pll);
+  color: #fff;
+}
+
+.walk-badge.small {
+  align-self: auto;
+  display: inline-block;
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin: 8px 0 4px;
+}
+
+.walk-step-label {
+  font: 800 19px var(--display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.walk-step-case {
+  font: 400 11.5px var(--mono);
+  color: var(--dim);
+}
+
+/* ---------- notation token row ---------- */
+
+.walk-notation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 13px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  font: 700 15px var(--mono);
+  min-height: 44px;
+}
+
+/* Done/upcoming tokens are bare text; ONLY the current one gets the padded
+   green pill (mock: padding/radius live on the current token alone). */
+.walk-token {
+  color: #c3b590;
+}
+
+.walk-token.done {
+  color: var(--ink);
+}
+
+.walk-token.current {
+  color: #fff;
+  background: var(--accent);
+  padding: 0 5px;
+  border-radius: 5px;
+}
+
+.walk-token-skip {
+  font: italic 400 12px var(--mono);
+  color: var(--dim);
+  padding: 0;
+}
+
+/* ---------- progress bar ---------- */
+
+.walk-progress {
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: #e0d5bd;
+  overflow: hidden;
+  flex: none;
+}
+
+.walk-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+  transition: width 0.2s;
+}
+
+/* ---------- transport controls ---------- */
+
+.walk-transport {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex: none;
+}
+
+.walk-tbtn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  font: 400 13px var(--mono);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+}
+
+.walk-tbtn:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+
+.walk-tbtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.walk-tbtn.walk-play {
+  width: 52px;
+  font-size: 14px;
+  color: #fff;
+  background: var(--accent);
+  border-color: transparent;
+}
+
+.walk-tbtn.walk-play:hover:not(:disabled) {
+  background: #438a5d;
+  border-color: transparent;
+}
+
+/* ---------- speed ---------- */
+
+.walk-speed {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: 400 11px var(--mono);
+  color: var(--dim);
+  flex: none;
+}
+
+.walk-speed span {
+  min-width: 86px;
+  font-variant-numeric: tabular-nums;
+}
+
+.walk-speed input[type='range'] {
+  flex: 1;
+  accent-color: var(--accent);
+}
+
+/* ---------- step list (grouped by stage, scrollable) ---------- */
+
+.walk-steps {
+  /* flex-basis 0: fill the leftover panel height without ever driving it
+     taller (the prototype caps at 220px; here the list flexes and scrolls). */
+  flex: 1 1 0;
+  min-height: 120px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-top: 1px dashed var(--cut);
+  padding-top: 10px;
+}
+
+.walk-step-item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font: 500 12px var(--mono);
+  color: var(--ink);
+}
+
+.walk-step-item:hover {
+  border-color: var(--border);
+}
+
+.walk-step-item.active {
+  background: #4e9e6b22;
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
+.walk-step-item.skipped {
+  opacity: 0.55;
+  font-style: italic;
+}
+
+.walk-step-item-notation {
+  font: 400 10px var(--mono);
+  color: var(--faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px) {
+  .walkthrough {
+    flex-direction: column;
+  }
+
+  .walk-stage {
+    min-width: 0;
+    min-height: 320px;
+    flex: none;
+  }
+
+  .walk-panel {
+    width: 100%;
+  }
+
+  .walk-steps {
+    flex: none;
+    max-height: 260px;
+  }
+}
+
+/* Narrow phones: transport buttons grow to comfortable thumb size. */
+@media (max-width: 720px) {
+  .walk-tbtn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .walk-tbtn.walk-play {
+    width: 60px;
+  }
+}

@@ -1,0 +1,1314 @@
+/* AlgLabs "Paper Toy" shell — header, home, solve landing, manual entry,
+   shared pills/cards/buttons (CONTRACTS.md §12.2, design handoff README).
+   Scanner/Walkthrough keep their old structural rules (bottom of this file,
+   re-tokened) until Scanner.css / Walkthrough.css land in the next phase. */
+
+/* ---------- app frame ---------- */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ---------- header ---------- */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 30px;
+  border-bottom: 1px dashed var(--cut);
+  background: var(--bar);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: none;
+  border: none;
+  padding: 0;
+  user-select: none;
+}
+
+.logo-mark {
+  display: grid;
+  grid-template-columns: repeat(2, 14px);
+  grid-template-rows: repeat(2, 14px);
+  gap: 2px;
+  transform: rotate(-6deg);
+}
+
+.logo-mark span {
+  border-radius: 3px;
+}
+
+.logo-mark span:nth-child(1) {
+  background: var(--cube-u);
+}
+
+.logo-mark span:nth-child(2) {
+  background: var(--cube-l);
+}
+
+.logo-mark span:nth-child(3) {
+  background: var(--cube-b);
+}
+
+.logo-mark span:nth-child(4) {
+  background: var(--cube-f);
+}
+
+.wordmark {
+  font: 800 22px/1 var(--display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.wordmark .accent {
+  color: var(--accent);
+}
+
+.tagline {
+  font: 400 10px var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--dim);
+  background: var(--surface);
+  border: 1px dashed var(--cut);
+  padding: 5px 10px;
+  border-radius: 4px;
+  transform: rotate(1deg);
+  white-space: nowrap;
+}
+
+.mock-badge {
+  font: 400 10px var(--mono);
+  color: var(--danger);
+  background: var(--surface);
+  border: 1px dashed var(--danger);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+.header-nav {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.nav-pill {
+  font: 700 11px var(--mono);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--cube-d-border);
+  border-radius: var(--radius-pill);
+  padding: 6px 13px;
+}
+
+.nav-pill:hover {
+  border-color: var(--ink);
+}
+
+/* ---------- shared screen scaffolding ---------- */
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.screen-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.screen-title {
+  margin: 0;
+  font: 800 20px var(--display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.screen-title.big {
+  font-size: 22px;
+}
+
+/* 24px is reserved for the solve-landing question (mock line 68). */
+.screen-title.hero {
+  font-size: 24px;
+}
+
+.back-link {
+  align-self: flex-start;
+  font: 400 12px var(--mono);
+  color: var(--dim);
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.back-link:hover {
+  color: var(--ink);
+}
+
+.hint {
+  margin: 0;
+  font: 400 11px var(--mono);
+  color: var(--dim);
+}
+
+/* ---------- shared buttons & pills ---------- */
+
+.btn {
+  font: 700 12px var(--mono);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--cube-d-border);
+  border-radius: var(--radius-pill);
+  padding: 8px 14px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn.primary {
+  font-family: var(--display);
+  font-size: 13px;
+  color: #fff;
+  background: var(--accent);
+  border-color: transparent;
+}
+
+.btn.primary:hover:not(:disabled) {
+  border-color: transparent;
+  background: #438a5d;
+}
+
+.btn.subtle {
+  background: transparent;
+  border-color: transparent;
+  color: var(--dim);
+  font-weight: 400;
+  align-self: flex-start;
+}
+
+.btn.subtle:hover {
+  color: var(--ink);
+  border-color: transparent;
+}
+
+.btn.square {
+  border-radius: 9px;
+}
+
+/* Ink CTA pill ("Solve it ▸", "Enter ▸", …). */
+.btn-ink {
+  align-self: flex-start;
+  font: 700 14px var(--display);
+  color: #fff;
+  background: var(--ink);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 12px 30px;
+}
+
+.btn-ink:hover:not(:disabled) {
+  background: #453e35;
+}
+
+.btn-ink:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.pill-cta {
+  align-self: flex-start;
+  margin-top: 6px;
+  font: 700 11px var(--display);
+  color: #fff;
+  background: var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+}
+
+/* Placeholder card for the not-yet-built trainer views. */
+.coming-soon {
+  background: var(--surface);
+  border: 1px dashed var(--cut);
+  border-radius: 14px;
+  padding: 40px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+  transform: rotate(-0.5deg);
+}
+
+.coming-soon-title {
+  font: 700 18px var(--display);
+  color: var(--ink);
+}
+
+.coming-soon-sub {
+  font: 400 11px var(--mono);
+  color: var(--dim);
+}
+
+/* ---------- icon tiles (pure CSS, no image assets) ---------- */
+
+.icon-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 11px;
+}
+
+.icon-tile.lg {
+  width: 52px;
+  height: 52px;
+  border-radius: 13px;
+}
+
+/* camera "lens": white circle on blue */
+.lens-tile {
+  background: var(--recog);
+  transform: rotate(3deg);
+}
+
+.lens-tile .lens-dot {
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 3px var(--recog);
+}
+
+.lens-tile.lg .lens-dot {
+  width: 22px;
+  height: 22px;
+  box-shadow: inset 0 0 0 4px var(--recog);
+}
+
+/* trainer "0.00" timer readout on ink */
+.timer-tile {
+  background: var(--ink);
+  color: var(--exec);
+  font: 700 15px var(--mono);
+  transform: rotate(-3deg);
+}
+
+/* manual entry: 3 color dots on green */
+.palette-tile {
+  background: var(--accent);
+  gap: 3px;
+  transform: rotate(-3deg);
+}
+
+.palette-tile span {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+
+.palette-tile span:nth-child(1) {
+  background: var(--cube-u);
+}
+
+.palette-tile span:nth-child(2) {
+  background: var(--cube-l);
+}
+
+.palette-tile span:nth-child(3) {
+  background: var(--surface);
+}
+
+/* demo "dice": two pips on cream */
+.dice-tile {
+  background: var(--surface);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+  padding: 9px;
+  transform: rotate(4deg);
+}
+
+.dice-tile span:first-child,
+.dice-tile span:last-child {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.dice-tile span:last-child {
+  justify-self: end;
+  align-self: end;
+}
+
+/* ---------- home (mode select) ---------- */
+
+.home {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 26px;
+}
+
+.hero {
+  margin: 0;
+  font: 800 30px/1.05 var(--display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  max-width: 560px;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+.mode-card {
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 26px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 8px 20px -10px #2b262055;
+  transition: transform 0.15s;
+}
+
+.mode-card.tilt-l {
+  transform: rotate(-1deg);
+}
+
+.mode-card.tilt-r {
+  transform: rotate(1deg);
+}
+
+.mode-card:hover:not(:disabled) {
+  transform: rotate(0deg) translateY(-2px);
+}
+
+.mode-card.train-card {
+  background: var(--exec);
+  border-color: #d9ac2c;
+}
+
+.mode-title {
+  font: 700 21px var(--display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-top: 4px;
+}
+
+.mode-desc {
+  font: 400 12px/1.5 var(--mono);
+  color: var(--dim);
+}
+
+.train-card .mode-desc {
+  color: #6b5f45;
+}
+
+/* ---------- solve landing ---------- */
+
+.solve-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.entry-card {
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 6px 16px -9px #2b262055;
+  transition: transform 0.15s;
+}
+
+.entry-card:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.entry-card:nth-child(1) {
+  transform: rotate(-1.2deg);
+}
+
+.entry-card:nth-child(2) {
+  transform: rotate(1deg);
+}
+
+.entry-card:nth-child(3) {
+  transform: rotate(-0.6deg);
+}
+
+.entry-card:hover:not(:disabled) {
+  transform: rotate(0deg) translateY(-2px);
+}
+
+.entry-card.demo {
+  background: var(--exec);
+  border-color: #d9ac2c;
+}
+
+.entry-title {
+  font: 700 16px var(--display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-top: 3px;
+}
+
+.entry-desc {
+  font: 400 11px/1.45 var(--mono);
+  color: var(--dim);
+}
+
+.entry-card.demo .entry-desc {
+  color: #6b5f45;
+}
+
+.landing-error {
+  align-self: flex-start;
+}
+
+/* ---------- manual entry ---------- */
+
+.manual-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.palette {
+  display: flex;
+  gap: 9px;
+}
+
+.palette-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #0002;
+  padding: 0;
+}
+
+/* prototype tilt: rotate((charCode % 5) - 2 deg) per face, order U R F D L B */
+.palette .palette-swatch:nth-child(1) {
+  transform: rotate(-2deg);
+}
+
+.palette .palette-swatch:nth-child(2) {
+  transform: rotate(0deg);
+}
+
+.palette .palette-swatch:nth-child(3) {
+  transform: rotate(-2deg);
+}
+
+.palette .palette-swatch:nth-child(4) {
+  transform: rotate(1deg);
+  border-color: var(--cube-d-border); /* white swatch needs an edge on cream */
+}
+
+.palette .palette-swatch:nth-child(5) {
+  transform: rotate(-1deg);
+}
+
+.palette .palette-swatch:nth-child(6) {
+  transform: rotate(-1deg);
+}
+
+.palette-swatch.selected {
+  box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--ink);
+}
+
+.manual-body {
+  display: flex;
+  gap: 26px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.manual-side {
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.net-grid {
+  /* Cell size is a custom property so narrow layouts can downscale the whole
+     net without touching the grid definition (desktop stays 25px). */
+  --net-cell: 25px;
+  display: grid;
+  grid-template-columns: repeat(12, var(--net-cell));
+  grid-template-rows: repeat(9, var(--net-cell));
+  gap: 3px;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 6px 16px -12px #2b262055;
+  width: fit-content;
+}
+
+.net-cell {
+  border: 1px solid #0003;
+  border-radius: 5px;
+  padding: 0;
+}
+
+.net-cell:hover:not(:disabled) {
+  outline: 2px solid var(--ink);
+  outline-offset: -1px;
+}
+
+.net-cell.center {
+  cursor: default;
+  box-shadow: inset 0 0 0 2px #2b262066;
+}
+
+.net-cell.readonly {
+  cursor: default;
+}
+
+@keyframes warn-pulse {
+  0%,
+  100% {
+    outline-color: rgba(193, 73, 91, 0.95);
+  }
+  50% {
+    outline-color: rgba(193, 73, 91, 0.15);
+  }
+}
+
+.net-cell.warn {
+  outline: 3px solid var(--danger);
+  outline-offset: -2px;
+  animation: warn-pulse 1.1s ease-in-out infinite;
+}
+
+.paste-row {
+  display: flex;
+  gap: 8px;
+}
+
+.paste-input {
+  flex: 1;
+  min-width: 0;
+  font: 400 11px var(--mono);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px dashed var(--cut);
+  border-radius: 9px;
+  padding: 10px 12px;
+  outline: none;
+}
+
+.paste-input::placeholder {
+  color: var(--faint);
+}
+
+.paste-input:focus {
+  border-color: var(--accent);
+}
+
+.local-problems {
+  color: var(--danger);
+  font: 400 11px var(--mono);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.local-ok {
+  color: var(--accent);
+  font: 400 11px var(--mono);
+}
+
+.validation-errors {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.validation-error {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+  background: var(--danger-soft);
+  border: 1px dashed var(--danger);
+  border-radius: 9px;
+  padding: 8px 12px;
+  font: 400 11.5px var(--mono);
+}
+
+.error-code {
+  font: 700 11px var(--mono);
+  color: var(--danger);
+}
+
+.suspect-faces {
+  color: var(--dim);
+}
+
+.failure {
+  color: var(--danger);
+  background: var(--danger-soft);
+  border: 1px dashed var(--danger);
+  border-radius: 9px;
+  padding: 8px 12px;
+  font: 400 11.5px var(--mono);
+}
+
+/* =====================================================================
+   TEMPORARY structural styles for the not-yet-reskinned Scanner and
+   Walkthrough screens (re-tokened from the old theme). The next phase
+   moves these into Scanner.css / Walkthrough.css with the full Paper Toy
+   treatment — those files, imported after this one, win any conflicts.
+   ===================================================================== */
+
+/* ---------- scanner ---------- */
+
+.scanner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scanner h2 {
+  margin: 0;
+  font: 800 20px var(--display);
+}
+
+.face-chips {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.face-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px 5px 7px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font: 700 12px var(--mono);
+  color: var(--dim);
+}
+
+.face-chip.current {
+  border-color: transparent;
+  color: #fff;
+  background: var(--accent);
+}
+
+.face-chip.done {
+  border-color: transparent;
+  color: #fff;
+  background: var(--accent);
+}
+
+.chip-check {
+  color: #fff;
+  font-size: 11px;
+}
+
+.chip-swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  border: 1px solid #0002;
+  flex-shrink: 0;
+}
+
+.chip-swatch.big {
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+}
+
+.scan-body {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.scan-video-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(400px, 100%);
+}
+
+.scan-video-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--ink);
+  border: 1px solid #ddd2bb;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.scan-video-wrap video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* never mirrored — mirroring would flip the sticker grid (§6) */
+}
+
+.scan-guide {
+  position: absolute;
+  left: 11%;
+  top: 11%;
+  width: 78%;
+  height: 78%;
+  pointer-events: none;
+}
+
+.scan-guide svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.steady-badge {
+  position: absolute;
+  bottom: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font: 700 10px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.scan-video-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  color: #c9bd9c;
+  font: 400 12px var(--mono);
+}
+
+.scan-video-placeholder.camera-error strong {
+  color: var(--surface);
+  font-size: 14px;
+}
+
+.steady-meter {
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: #e0d5bd;
+  overflow: hidden;
+}
+
+.steady-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+  transition: width 0.1s linear;
+}
+
+.scan-status {
+  font: 400 11px var(--mono);
+  color: var(--dim);
+  min-height: 20px;
+}
+
+.scan-side {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.scan-instruction {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+}
+
+.scan-face-now {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font: 700 14px var(--display);
+  color: var(--ink);
+}
+
+.scan-face-now strong {
+  color: var(--ink);
+}
+
+.face-diagram {
+  align-self: center;
+}
+
+.scan-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.upload-btn {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.upload-btn.disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.upload-btn input[type='file'] {
+  display: none;
+}
+
+.last-capture {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.last-capture-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  font: 400 11px var(--mono);
+  color: var(--dim);
+}
+
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 20px);
+  grid-template-rows: repeat(3, 20px);
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.mini-grid span {
+  border-radius: 3px;
+  border: 1px solid #0003;
+}
+
+.rescan-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rescan-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+}
+
+.rescan-btn.suspect {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+
+/* ---------- walkthrough ---------- */
+
+.walkthrough-main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.walkthrough {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 20px;
+}
+
+.walkthrough-cube {
+  flex: 1;
+  min-width: 0;
+  min-height: 360px;
+  position: relative;
+  border: 1px solid #ddd2bb;
+  border-radius: 16px;
+  background: var(--bar);
+  background-image: radial-gradient(#2b262018 1.5px, transparent 0);
+  background-size: 15px 15px;
+  overflow: hidden;
+}
+
+.cube-view {
+  position: absolute;
+  inset: 0;
+}
+
+/* A CubeView canvas may sit at Three.js's default 300×150 attribute size
+   until the renderer's ResizeObserver delivers (browsers suspend delivery in
+   hidden/background tabs). Clamping to the stage keeps a not-yet-sized canvas
+   from pushing the page wider; once setSize runs, its inline px size equals
+   100% and this rule is a no-op. */
+.cube-view canvas,
+.tr-cube canvas,
+.pose-cube-view canvas {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.walkthrough-panel {
+  width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 8px 20px -12px #2b262055;
+  overflow-y: auto;
+}
+
+.walkthrough-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.move-counter {
+  color: var(--dim);
+  font: 400 11px var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.current-step {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stage-badge {
+  align-self: flex-start;
+  font: 700 10px var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 5px;
+  background: var(--ink);
+  color: #fff;
+}
+
+.stage-badge.stage-cross {
+  background: var(--stage-cross);
+  color: #fff;
+}
+
+.stage-badge.stage-f2l {
+  background: var(--stage-f2l);
+  color: #fff;
+}
+
+.stage-badge.stage-oll {
+  background: var(--stage-oll);
+  color: var(--ink);
+}
+
+.stage-badge.stage-pll {
+  background: var(--stage-pll);
+  color: #fff;
+}
+
+.stage-badge.small {
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin: 8px 0 4px;
+}
+
+.step-label {
+  font: 800 19px var(--display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.step-case {
+  color: var(--dim);
+  font: 400 11.5px var(--mono);
+}
+
+.step-notation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 12px 13px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  font: 700 15px var(--mono);
+  min-height: 42px;
+}
+
+.token {
+  color: #c3b590;
+}
+
+.token.done {
+  color: var(--ink);
+}
+
+.token.current {
+  color: #fff;
+  background: var(--accent);
+  font-weight: 700;
+  padding: 0 5px;
+  border-radius: 5px;
+}
+
+.skipped-token {
+  font-style: italic;
+}
+
+.progress-track {
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: #e0d5bd;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+  transition: width 0.2s;
+}
+
+.controls {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.controls .btn {
+  font-size: 13px;
+  min-width: 34px;
+  padding: 7px 10px;
+}
+
+.controls .play {
+  min-width: 52px;
+  font-size: 14px;
+  color: #fff;
+  background: var(--accent);
+  border-color: transparent;
+}
+
+.speed-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: 400 11px var(--mono);
+  color: var(--dim);
+}
+
+.speed-row span {
+  min-width: 86px;
+  font-variant-numeric: tabular-nums;
+}
+
+.speed-row input[type='range'] {
+  flex: 1;
+  accent-color: var(--accent);
+}
+
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-top: 1px dashed var(--cut);
+  padding-top: 10px;
+}
+
+.step-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 7px 10px;
+  text-align: left;
+  font: 400 12px var(--mono);
+  color: var(--ink);
+}
+
+.step-item:hover {
+  border-color: var(--border);
+}
+
+.step-item.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
+.step-item.skipped {
+  opacity: 0.55;
+  font-style: italic;
+}
+
+.step-item-notation {
+  font: 400 10px var(--mono);
+  color: var(--faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px) {
+  .mode-grid,
+  .solve-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .walkthrough {
+    flex-direction: column;
+  }
+
+  .walkthrough-cube {
+    min-height: 320px;
+  }
+
+  .walkthrough-panel {
+    width: 100%;
+  }
+}
+
+/* ---------- narrow phones (layout only — Paper Toy look unchanged) ---------- */
+
+@media (max-width: 720px) {
+  .app-header {
+    flex-wrap: wrap;
+    row-gap: 10px;
+    padding: 12px 16px;
+  }
+
+  .app-main {
+    padding: 20px 16px;
+  }
+
+  /* Comfortable thumb targets on touch layouts. */
+  .nav-pill,
+  .btn {
+    min-height: 40px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+
+  .palette-swatch {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 620px) {
+  .tagline {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  /* The 12×9 net downscales to fit; if a screen is narrower still, the card
+     scrolls inside itself — the page body never scrolls sideways. */
+  .net-grid {
+    --net-cell: 22px;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 360px) {
+  .net-grid {
+    --net-cell: 20px;
+    gap: 2px;
+    padding: 10px;
+  }
+}

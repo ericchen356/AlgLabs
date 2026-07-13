@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- AlgLabs mark: the 2×2 tilted sticker grid (yellow / red / blue / green). -->
+  <rect width="64" height="64" rx="14" fill="#efe7d6"/>
+  <g transform="rotate(-6 32 32)">
+    <rect x="14" y="14" width="16" height="16" rx="3.5" fill="#f0c64a"/>
+    <rect x="34" y="14" width="16" height="16" rx="3.5" fill="#c1495b"/>
+    <rect x="14" y="34" width="16" height="16" rx="3.5" fill="#3e6ba8"/>
+    <rect x="34" y="34" width="16" height="16" rx="3.5" fill="#4e9e6b"/>
+  </g>
+</svg>

@@ -1,0 +1,144 @@
+/* AlgLabs — "Paper Toy" theme base (CONTRACTS.md §12, design handoff README) */
+
+/* Fonts via @fontsource (offline-safe): Bricolage Grotesque 600–800 for
+   display, Space Mono 400/700 for body / mono / timers / notation. */
+@import '@fontsource/bricolage-grotesque/600.css';
+@import '@fontsource/bricolage-grotesque/700.css';
+@import '@fontsource/bricolage-grotesque/800.css';
+@import '@fontsource/space-mono/400.css';
+@import '@fontsource/space-mono/700.css';
+
+:root {
+  /* ---- Paper Toy design tokens (handoff README, quick-copy block) ---- */
+  --paper: #efe7d6; /* canvas background */
+  --bar: #e5dac2; /* header bar */
+  --surface: #fbf8f1; /* raised cards, panels, inputs */
+  --border: #e2d7bf; /* solid hairline */
+  --cut: #c3b590; /* dashed "cut line" borders */
+  --ink: #2b2620; /* primary text, primary buttons */
+  --dim: #8a7c5f; /* dim text */
+  --faint: #a99e85; /* faint / disabled text */
+  --accent: #4e9e6b; /* primary green: CTAs, active, PB */
+  --recog: #3e6ba8; /* recognition timer / phase blue */
+  --exec: #f0c64a; /* execution & total timer yellow */
+
+  /* Muted cube sticker palette (stickers AND functional color coding). */
+  --cube-u: #f0c64a;
+  --cube-r: #e8703a;
+  --cube-f: #4e9e6b;
+  --cube-d: #fbf8f1; /* needs a visible edge on cream */
+  --cube-d-border: #d9ccae;
+  --cube-l: #c1495b;
+  --cube-b: #3e6ba8;
+
+  /* Semantic colors on the paper theme. */
+  --danger: #c1495b;
+  --danger-soft: rgba(193, 73, 91, 0.12);
+  --ok: var(--accent);
+  --accent-soft: rgba(78, 158, 107, 0.16);
+
+  /* Walkthrough stage badge colors (handoff "Semantic color" table). */
+  --stage-cross: #2b2620;
+  --stage-f2l: #3e6ba8;
+  --stage-oll: #f0c64a;
+  --stage-pll: #c1495b;
+
+  --display: 'Bricolage Grotesque', sans-serif;
+  --mono: 'Space Mono', monospace;
+  --sans: var(--mono); /* legacy alias — body text is Space Mono now */
+
+  /* Legacy variable aliases so not-yet-reskinned screens (Scanner,
+     Walkthrough) keep rendering until their own stylesheets land. */
+  --bg: var(--paper);
+  --bg-raised: var(--surface);
+  --bg-inset: var(--paper);
+  --text: var(--ink);
+  --text-dim: var(--dim);
+  --text-bright: var(--ink);
+
+  /* Shape & depth. */
+  --radius-card: 12px;
+  --radius-pill: 999px;
+  --shadow-card: 0 6px 16px -10px #2b262055;
+
+  font: 13px/1.5 var(--mono);
+  color-scheme: light;
+  color: var(--ink);
+  background: var(--paper);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+}
+
+/* Cream canvas over a subtle radial dot texture (16px grid). */
+body {
+  background: var(--paper);
+  background-image: radial-gradient(#2b262010 1.2px, transparent 0);
+  background-size: 16px 16px;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: var(--recog);
+}
+
+a:hover {
+  color: #2f5488;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+input {
+  font: inherit;
+}
+
+::selection {
+  background: var(--exec);
+}
+
+/* Shared keyframes (handoff "Shape, depth, motion"). */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes pbpop {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,417 @@
+/* =====================================================================
+   Scanner — Paper Toy reskin (design handoff §3 + ⚠️ note 1).
+   Imported by Scanner.tsx AFTER App.css in the module graph, so these
+   rules win equal-specificity conflicts with the temporary structural
+   scanner styles still in App.css. The rules below are self-sufficient:
+   only permanent shared classes (.btn, .btn-ink, .hint, .failure,
+   .validation-errors, .net-grid/.net-cell, .screen-title-row, .back-link)
+   come from App.css.
+   ===================================================================== */
+
+.scanner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scanner h2 {
+  margin: 0;
+  font: 800 20px var(--display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+/* ---------- face chips (F R B L U D) ---------- */
+
+.face-chips {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.face-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px 5px 7px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font: 700 12px var(--mono);
+  color: var(--dim);
+}
+
+.face-chip.current,
+.face-chip.done {
+  border-color: transparent;
+  color: #fff;
+  background: var(--accent);
+}
+
+.chip-check {
+  color: #fff;
+  font-size: 11px;
+}
+
+.chip-swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  border: 1px solid #0002;
+  flex-shrink: 0;
+}
+
+/* ---------- two-column body ---------- */
+
+.scan-body {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.scan-video-col {
+  /* display/width explicitly reset in case App.css's temporary scanner
+     block (flex column, fixed width) is still present. */
+  display: block;
+  width: auto;
+  flex: 1;
+  min-width: 300px;
+  max-width: 440px;
+}
+
+/* ---------- ink video frame ---------- */
+
+.scan-video-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--ink);
+  border: 1px solid #ddd2bb;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.scan-video-wrap video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* never mirrored — mirroring would flip the sticker grid (§6) */
+}
+
+/* Guide overlay: #ffffff22 3×3 grid over the §9.5 guide box (centered 78%
+   square = inset 11%) + yellow corner brackets, green while steady. */
+.scan-guide {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.scan-grid {
+  position: absolute;
+  inset: 11%;
+  background-image:
+    linear-gradient(#ffffff22 1px, transparent 0),
+    linear-gradient(90deg, #ffffff22 1px, transparent 0);
+  background-size: 33.33% 33.33%;
+}
+
+.scan-bracket {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 0 solid var(--exec);
+  transition: border-color 0.15s;
+}
+
+.scan-guide.steady .scan-bracket {
+  border-color: var(--accent);
+}
+
+.scan-bracket.tl {
+  left: 9%;
+  top: 9%;
+  border-left-width: 4px;
+  border-top-width: 4px;
+  border-radius: 6px 0 0 0;
+}
+
+.scan-bracket.tr {
+  right: 9%;
+  top: 9%;
+  border-right-width: 4px;
+  border-top-width: 4px;
+  border-radius: 0 6px 0 0;
+}
+
+.scan-bracket.bl {
+  left: 9%;
+  bottom: 9%;
+  border-left-width: 4px;
+  border-bottom-width: 4px;
+  border-radius: 0 0 0 6px;
+}
+
+.scan-bracket.br {
+  right: 9%;
+  bottom: 9%;
+  border-right-width: 4px;
+  border-bottom-width: 4px;
+  border-radius: 0 0 6px 0;
+}
+
+/* Status caption over a bottom gradient inside the frame. */
+.scan-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  font: 400 11px var(--mono);
+  color: #c9bd9c;
+  padding: 10px;
+  background: linear-gradient(transparent, #00000066);
+  pointer-events: none;
+  min-height: 36px;
+}
+
+.scan-video-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  color: #c9bd9c;
+  font: 400 12px var(--mono);
+}
+
+/* Camera-denied / unavailable panel, restyled to the Paper Toy frame. */
+.scan-video-placeholder.camera-error strong {
+  font: 800 15px var(--display);
+  letter-spacing: -0.01em;
+  color: var(--surface);
+}
+
+.scan-video-placeholder.camera-error .btn {
+  margin-top: 4px;
+  background: var(--surface);
+  border-color: transparent;
+}
+
+/* Green progress bar under the frame (captured faces / 6 + steadiness). */
+.scan-progress {
+  height: 7px;
+  border-radius: var(--radius-pill);
+  margin-top: 10px;
+  overflow: hidden;
+  background: #e0d5bd;
+}
+
+.scan-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+  transition: width 0.25s;
+}
+
+/* ---------- instruction card + actions ---------- */
+
+.scan-side {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.scan-instruction {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+}
+
+.scan-face-now {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font: 700 14px var(--display);
+  color: var(--ink);
+}
+
+.face-dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  border: 1px solid #0002;
+  flex-shrink: 0;
+}
+
+.scan-instruction .hint {
+  line-height: 1.5;
+}
+
+/* Pose cube: a small REAL CubeView showing the solved cube oriented so the
+   scanned face points toward the camera, captioned with the motion. */
+.pose-cube {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 0 2px;
+}
+
+.pose-cube-stage {
+  position: relative;
+  width: 170px;
+  height: 140px;
+}
+
+.pose-cube-view {
+  position: absolute;
+  inset: 0;
+}
+
+.pose-caption {
+  font: 400 10px var(--mono);
+  color: var(--dim);
+  text-align: center;
+}
+
+.scan-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.capture-btn {
+  flex: 1;
+  padding: 12px 14px;
+}
+
+.upload-btn {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 16px;
+  font-weight: 400;
+  border-color: var(--cube-d-border);
+}
+
+.upload-btn.disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* Visually hidden but still focusable, so keyboard users can Tab to Upload
+   (display:none would remove it from the tab order entirely). */
+.upload-btn {
+  position: relative;
+}
+
+.upload-btn input[type='file'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.upload-btn:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- last capture confirmation ---------- */
+
+.last-capture {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+}
+
+.last-capture-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  font: 400 11px var(--mono);
+  color: var(--dim);
+}
+
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 20px);
+  grid-template-rows: repeat(3, 20px);
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.mini-grid span {
+  border-radius: 5px;
+  border: 1px solid #0003;
+}
+
+/* ---------- review ---------- */
+
+/* The review net reuses the manual-entry .net-grid/.net-cell Paper Toy card
+   (cream surface, 5px-radius sticker cells, pulsing .warn cells). */
+.review-net {
+  align-self: flex-start;
+}
+
+.rescan-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rescan-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+}
+
+.rescan-btn.suspect {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.solve-btn {
+  align-self: flex-start;
+}
+
+/* ---------- narrow phones (layout only) ---------- */
+
+@media (max-width: 560px) {
+  /* The video frame takes the full row and shrinks with the viewport instead
+     of holding its 300px floor; the instruction column wraps below it. */
+  .scan-video-col {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+
+  .scan-side {
+    min-width: 0;
+  }
+}

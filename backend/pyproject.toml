@@ -1,0 +1,25 @@
+[project]
+name = "alglabs-backend"
+version = "0.1.0"
+description = "AlgLabs — CFOP trainer & scanner backend: cube core, CFOP solver, vision, API"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.111",
+    "uvicorn[standard]>=0.30",
+    "numpy>=1.26",
+    "opencv-python-headless>=4.9",
+    "scipy>=1.13",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.uv]
+package = false

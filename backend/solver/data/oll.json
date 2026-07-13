@@ -1,0 +1,572 @@
+[
+  {
+    "id": 1,
+    "name": "Runway",
+    "group": "Dot",
+    "alg": "R U2 R2 F R F' U2 R' F R F'",
+    "alt": [
+      "R U' R2 D' r U' r' D R2 U R'",
+      "R U B' R B R2 U' R' F R F'"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Zamboni",
+    "group": "Dot",
+    "alg": "F R U R' U' F' f R U R' U' f'",
+    "alt": [
+      "r U r' U2 r U2 R' U2 R U' r'",
+      "F' L' U' L U F f' L' U' L U f"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Dot 3",
+    "group": "Dot",
+    "alg": "f R U R' U' f' U' F R U R' U' F'",
+    "alt": [
+      "r' R2 U R' U r U2 r' U M'",
+      "f' L' U' L U f U' F' L' U' L U F"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Dot 4",
+    "group": "Dot",
+    "alg": "f R U R' U' f' U F R U R' U' F'",
+    "alt": [
+      "M U' r U2 r' U' R U' R' M'",
+      "f' L' U' L U f U F' L' U' L U F"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Lefty Square",
+    "group": "Square",
+    "alg": "r' U2 R U R' U r",
+    "alt": [
+      "R' F2 r U r' F R",
+      "l' U2 L F' L F L' U L' U l"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Righty Square",
+    "group": "Square",
+    "alg": "r U2 R' U' R U' r'",
+    "alt": [
+      "l U2 L' U' L U' l'",
+      "r U2 R' F R' F' R U' R U' r'"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Lightning",
+    "group": "Small Lightning Bolt",
+    "alg": "r U R' U R U2 r'",
+    "alt": [
+      "F R' F' R U2 R U2 R'",
+      "r U r' U R U' R' r U' r'"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Reverse Lightning",
+    "group": "Small Lightning Bolt",
+    "alg": "l' U' L U' L' U2 l",
+    "alt": [
+      "F' L F L' U2 L' U2 L",
+      "R U2 R' U2 R' F R F'"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Kite",
+    "group": "Fish",
+    "alg": "R U R' U' R' F R2 U R' U' F'",
+    "alt": [
+      "L' U' L U' L F' L' F L' U2 L",
+      "R' U' R U' R' U R' F R F' U R"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Anti-Kite",
+    "group": "Fish",
+    "alg": "R U R' U R' F R F' R U2 R'",
+    "alt": [
+      "L' U' L U L F' L2 U' L U F",
+      "F U F' R' F R U' R' F' R"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Downstairs",
+    "group": "Small Lightning Bolt",
+    "alg": "r U R' U R' F R F' R U2 r'",
+    "alt": [
+      "S R U R' U R U2 R' U2 S'",
+      "F' L' U' L U F U F R U R' U' F'"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Upstairs",
+    "group": "Small Lightning Bolt",
+    "alg": "l' U' L U' L F' L' F L' U2 l",
+    "alt": [
+      "S' L' U' L U' L' U2 L U2 S",
+      "M U2 R' U' R U' R' U2 R U M'"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Gun",
+    "group": "Knight Move",
+    "alg": "F U R U' R2 F' R U R U' R'",
+    "alt": [
+      "r U' r' U' r U r' F' U F",
+      "F U R U2 R' U' R U R' F'"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Anti-Gun",
+    "group": "Knight Move",
+    "alg": "R' F R U R' F' R F U' F'",
+    "alt": [
+      "F' U' L' U2 L U L' U' L F",
+      "F' U' L' U L2 F L' U' L' U L"
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Squeegee",
+    "group": "Knight Move",
+    "alg": "l' U' l L' U' L U l' U l",
+    "alt": [
+      "r' U' r R' U' R U r' U r",
+      "B' R' B F' U' F U B' R B"
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Anti-Squeegee",
+    "group": "Knight Move",
+    "alg": "r U r' R U R' U' r U' r'",
+    "alt": [
+      "l U l' L U L' U' l U' l'",
+      "F R F' B U B' U' F R' F'"
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Slash",
+    "group": "Dot",
+    "alg": "R U R' U R' F R F' U2 R' F R F'",
+    "alt": [
+      "F R' F' R2 r' U R U' R' U' M'",
+      "L' U' L U' L F' L' F U2 L F' L' F"
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Crown",
+    "group": "Dot",
+    "alg": "r U R' U R U2 r2 U' R U' R' U2 r",
+    "alt": [
+      "R U2 R2 F R F' U2 M' U R U' r'",
+      "F R U R' U F' U2 F' L F L'"
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Bunny",
+    "group": "Dot",
+    "alg": "M U R U R' U' M' R' F R F'",
+    "alt": [
+      "S' R U R' S U' R' F R F'",
+      "M U' L' U' L U M' L F' L' F"
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Checkers",
+    "group": "Dot",
+    "alg": "r U R' U' M2 U R U' R' U' M'",
+    "alt": [
+      "S' R U R' S U' M' U R U' r'",
+      "M U R U R' U' M2 U R U' r'"
+    ]
+  },
+  {
+    "id": 21,
+    "name": "H / Double Sune",
+    "group": "Cross",
+    "alg": "R U2 R' U' R U R' U' R U' R'",
+    "alt": [
+      "F R U R' U' R U R' U' R U R' U' F'",
+      "R U R' U R U' R' U R U2 R'"
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Pi / Bruno",
+    "group": "Cross",
+    "alg": "R U2 R2 U' R2 U' R2 U2 R",
+    "alt": [
+      "f R U R' U' f' F R U R' U' F'",
+      "R' U2 R2 U R2 U R2 U2 R'"
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Headlights / U",
+    "group": "Cross",
+    "alg": "R2 D' R U2 R' D R U2 R",
+    "alt": [
+      "F R U' R' U R U R' U R U' R' F'",
+      "R2 D R' U2 R D' R' U2 R'"
+    ]
+  },
+  {
+    "id": 24,
+    "name": "T / Chameleon",
+    "group": "Cross",
+    "alg": "r U R' U' r' F R F'",
+    "alt": [
+      "R' F' r U R U' r' F",
+      "R B L' B' R' B L B'"
+    ]
+  },
+  {
+    "id": 25,
+    "name": "L / Bowtie",
+    "group": "Cross",
+    "alg": "F' r U R' U' r' F R",
+    "alt": [
+      "R' F R B' R' F' R B",
+      "F l' U' L U l F' L'"
+    ]
+  },
+  {
+    "id": 26,
+    "name": "Anti-Sune",
+    "group": "Cross",
+    "alg": "R U2 R' U' R U' R'",
+    "alt": [
+      "L' U' L U' L' U2 L",
+      "R' U' R U' R' U2 R"
+    ]
+  },
+  {
+    "id": 27,
+    "name": "Sune",
+    "group": "Cross",
+    "alg": "R U R' U R U2 R'",
+    "alt": [
+      "L' U2 L U L' U L",
+      "R' U2 R U R' U R"
+    ]
+  },
+  {
+    "id": 28,
+    "name": "Stealth / Arrow",
+    "group": "All Corners Oriented",
+    "alg": "r U R' U' r' R U R U' R'",
+    "alt": [
+      "M' U M U2 M' U M",
+      "l' U' L U l L' U' L' U L"
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Spotted Chameleon",
+    "group": "Awkward",
+    "alg": "R U R' U' R U' R' F' U' F R U R'",
+    "alt": [
+      "M U R U R' U' R' F R F' M'",
+      "F' U' L' U2 L U L' U2 L U F"
+    ]
+  },
+  {
+    "id": 30,
+    "name": "Anti-Spotted Chameleon",
+    "group": "Awkward",
+    "alg": "F U R U2 R' U' R U2 R' U' F'",
+    "alt": [
+      "F R' F R2 U' R' U' R U R' F2",
+      "L' U' L U L' U L F U F' L' U' L"
+    ]
+  },
+  {
+    "id": 31,
+    "name": "Couch",
+    "group": "P",
+    "alg": "R' U' F U R U' R' F' R",
+    "alt": [
+      "S R U R' U' f' U' F",
+      "L' U' B U L U' L' B' L"
+    ]
+  },
+  {
+    "id": 32,
+    "name": "Anti-Couch",
+    "group": "P",
+    "alg": "L U F' U' L' U L F L'",
+    "alt": [
+      "R U B' U' R' U R B R'",
+      "S R U R' U' R' F R f'"
+    ]
+  },
+  {
+    "id": 33,
+    "name": "Key",
+    "group": "T",
+    "alg": "R U R' U' R' F R F'",
+    "alt": [
+      "L' U' L U L F' L' F",
+      "F R U' R' U R U R' F'"
+    ]
+  },
+  {
+    "id": 34,
+    "name": "City",
+    "group": "C",
+    "alg": "R U R2 U' R' F R U R U' F'",
+    "alt": [
+      "F R U R' U' R' F' r U R U' r'",
+      "R U R' U' B' R' F R F' B"
+    ]
+  },
+  {
+    "id": 35,
+    "name": "Fish Salad",
+    "group": "Fish",
+    "alg": "R U2 R2 F R F' R U2 R'",
+    "alt": [
+      "f R U R' U' f' R U R' U R U2 R'",
+      "L' U2 L2 F' L' F L' U2 L"
+    ]
+  },
+  {
+    "id": 36,
+    "name": "Wario",
+    "group": "W",
+    "alg": "L' U' L U' L' U L U L F' L' F",
+    "alt": [
+      "R' U' R U' R' U R U R B' R' B",
+      "R U R2 F' U' F U R2 U2 R'"
+    ]
+  },
+  {
+    "id": 37,
+    "name": "Mounted Fish",
+    "group": "Fish",
+    "alg": "F R' F' R U R U' R'",
+    "alt": [
+      "F R U' R' U' R U R' F'",
+      "F' r U r' U' r' F r"
+    ]
+  },
+  {
+    "id": 38,
+    "name": "Mario",
+    "group": "W",
+    "alg": "R U R' U R U' R' U' R' F R F'",
+    "alt": [
+      "L U L' U L U' L' U' L' B L B'",
+      "B U B' U B U' B' U' B' R B R'"
+    ]
+  },
+  {
+    "id": 39,
+    "name": "Fung",
+    "group": "Big Lightning Bolt",
+    "alg": "L F' L' U' L U F U' L'",
+    "alt": [
+      "R U R' F' U' F U R U2 R'",
+      "R B' R' U' R U B U' R'"
+    ]
+  },
+  {
+    "id": 40,
+    "name": "Anti-Fung",
+    "group": "Big Lightning Bolt",
+    "alg": "R' F R U R' U' F' U R",
+    "alt": [
+      "L' B L U L' U' B' U L",
+      "f R' F' R U R U' R' S'"
+    ]
+  },
+  {
+    "id": 41,
+    "name": "Awkward Fish",
+    "group": "Awkward",
+    "alg": "R U R' U R U2 R' F R U R' U' F'",
+    "alt": [
+      "R U' R' U2 R U y R U' R' U' F'",
+      "F U R2 D R' U' R D' R2 F'"
+    ]
+  },
+  {
+    "id": 42,
+    "name": "Anti-Awkward Fish",
+    "group": "Awkward",
+    "alg": "R' U' R U' R' U2 R F R U R' U' F'",
+    "alt": [
+      "F' U' L2 D' L U L' D L2 F",
+      "L' U' L U' L' U2 L F' L' U' L U F"
+    ]
+  },
+  {
+    "id": 43,
+    "name": "Anti-P",
+    "group": "P",
+    "alg": "F' U' L' U L F",
+    "alt": [
+      "R' U' F' U F R",
+      "R' U' F R' F' R U R"
+    ]
+  },
+  {
+    "id": 44,
+    "name": "P",
+    "group": "P",
+    "alg": "F U R U' R' F'",
+    "alt": [
+      "f R U R' U' f'",
+      "R U' R' F' U F R U R' U R U' R'"
+    ]
+  },
+  {
+    "id": 45,
+    "name": "Suit Up / T",
+    "group": "T",
+    "alg": "F R U R' U' F'",
+    "alt": [
+      "f U R U' R' f'",
+      "b' U' R' U R b"
+    ]
+  },
+  {
+    "id": 46,
+    "name": "Seein' Headlights",
+    "group": "C",
+    "alg": "R' U' R' F R F' U R",
+    "alt": [
+      "L U L F' L' F U' L'",
+      "B' U' B' R B R' U B"
+    ]
+  },
+  {
+    "id": 47,
+    "name": "Anti-Breakneck",
+    "group": "L",
+    "alg": "F' L' U' L U L' U' L U F",
+    "alt": [
+      "R' U' R' F R F' R' F R F' U R",
+      "B' R' U' R U R' U' R U B"
+    ]
+  },
+  {
+    "id": 48,
+    "name": "Breakneck",
+    "group": "L",
+    "alg": "F R U R' U' R U R' U' F'",
+    "alt": [
+      "R U2 R' U' R U R' U2 R' F R F'",
+      "f U R U' R' U R U' R' f'"
+    ]
+  },
+  {
+    "id": 49,
+    "name": "Right Back Squeezy",
+    "group": "L",
+    "alg": "r U' r2 U r2 U r2 U' r",
+    "alt": [
+      "l U' l2 U l2 U l2 U' l",
+      "R' F R' F' R2 U2 B' R B R'"
+    ]
+  },
+  {
+    "id": 50,
+    "name": "Right Front Squeezy",
+    "group": "L",
+    "alg": "r' U r2 U' r2 U' r2 U r'",
+    "alt": [
+      "l' U l2 U' l2 U' l2 U l'",
+      "R B' R B R2 U2 F R' F' R"
+    ]
+  },
+  {
+    "id": 51,
+    "name": "Bottlecap",
+    "group": "Line",
+    "alg": "f R U R' U' R U R' U' f'",
+    "alt": [
+      "F U R U' R' U R U' R' F'",
+      "f' L' U' L U L' U' L U f"
+    ]
+  },
+  {
+    "id": 52,
+    "name": "Rice Cooker",
+    "group": "Line",
+    "alg": "R U R' U R U' B U' B' R'",
+    "alt": [
+      "R' U' R U' R' U F' U F R",
+      "R' F' U' F U' R U R' U R"
+    ]
+  },
+  {
+    "id": 53,
+    "name": "Frying Pan",
+    "group": "L",
+    "alg": "r' U' R U' R' U R U' R' U2 r",
+    "alt": [
+      "l' U' L U' L' U L U' L' U2 l",
+      "r' U2 R U R' U' R U R' U r"
+    ]
+  },
+  {
+    "id": 54,
+    "name": "Anti-Frying Pan",
+    "group": "L",
+    "alg": "r U R' U R U' R' U R U2 r'",
+    "alt": [
+      "l U L' U L U' L' U L U2 l'",
+      "r U2 R' U' R U R' U' R U' r'"
+    ]
+  },
+  {
+    "id": 55,
+    "name": "Highway",
+    "group": "Line",
+    "alg": "R U2 R2 U' R U' R' U2 F R F'",
+    "alt": [
+      "R' F R U R U' R2 F' R2 U' R' U R U R'",
+      "L' U2 L2 U L' U L U2 F' L' F"
+    ]
+  },
+  {
+    "id": 56,
+    "name": "Streetlights",
+    "group": "Line",
+    "alg": "r U r' U R U' R' U R U' R' r U' r'",
+    "alt": [
+      "F R U R' U' R F' r U R' U' r'",
+      "r' U' r U' R' U R U' R' U R r' U r"
+    ]
+  },
+  {
+    "id": 57,
+    "name": "H / Mummy",
+    "group": "All Corners Oriented",
+    "alg": "R U R' U' M' U R U' r'",
+    "alt": [
+      "L' U' L U M' U' L' U l",
+      "R U R' U' R' r U R U' r'"
+    ]
+  }
+]
