@@ -171,16 +171,77 @@ function getMockFixture(): MockFixture {
 }
 
 // ---------------------------------------------------------------------------
+// Cold-start signal
+// ---------------------------------------------------------------------------
+
+/**
+ * A request still in flight after this long means the API is almost certainly
+ * a cold instance booting (warm responses are single-digit milliseconds to a
+ * few hundred), so the UI stops pretending it is thinking and says so.
+ */
+const SLOW_MS = 1_500
+
+/** Give a cold free-tier instance a generous boot window before giving up. */
+const TIMEOUT_MS = 90_000
+
+type BootingListener = (booting: boolean) => void
+
+const bootingListeners = new Set<BootingListener>()
+let booting = false
+let inflight = 0
+let slowTimer: ReturnType<typeof setTimeout> | null = null
+
+function setBooting(next: boolean): void {
+  if (booting === next) return
+  booting = next
+  for (const listener of bootingListeners) listener(next)
+}
+
+/** True while a request has been outstanding long enough to look like a boot. */
+export function isBooting(): boolean {
+  return booting
+}
+
+/** Subscribe to {@link isBooting} changes; returns an unsubscribe function. */
+export function subscribeBooting(listener: BootingListener): () => void {
+  bootingListeners.add(listener)
+  return () => {
+    bootingListeners.delete(listener)
+  }
+}
+
+/**
+ * `fetch` against the API base, tracking in-flight requests so the shell can
+ * flag a cold start, and aborting after {@link TIMEOUT_MS} rather than hanging
+ * forever. `path` is appended to {@link BASE}. Throws ApiUnavailableError on a
+ * network failure or timeout.
+ */
+export async function apiFetch(path: string, init?: RequestInit): Promise<Response> {
+  if (inflight === 0) slowTimer = setTimeout(() => setBooting(true), SLOW_MS)
+  inflight += 1
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS)
+  try {
+    return await fetch(`${BASE}${path}`, { ...init, signal: controller.signal })
+  } catch {
+    throw new ApiUnavailableError()
+  } finally {
+    clearTimeout(timeout)
+    inflight -= 1
+    if (inflight === 0) {
+      if (slowTimer) clearTimeout(slowTimer)
+      slowTimer = null
+      setBooting(false)
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
 // HTTP helpers
 // ---------------------------------------------------------------------------
 
 async function request<T>(path: string, init?: RequestInit): Promise<{ status: number; body: T }> {
-  let res: Response
-  try {
-    res = await fetch(`${BASE}${path}`, init)
-  } catch {
-    throw new ApiUnavailableError()
-  }
+  const res = await apiFetch(path, init)
   let body: T
   try {
     body = (await res.json()) as T
@@ -206,11 +267,13 @@ function postInit(payload: unknown): RequestInit {
  * GET /api/health, fire-and-forget. Free API hosts idle their instance out
  * after inactivity and take tens of seconds to boot; pinging on app mount
  * overlaps that wake-up with the user reading the home screen instead of
- * with their first solve. Never throws.
+ * with their first solve — and, because it goes through {@link apiFetch}, it
+ * raises the "booting" flag straight away so the wait is never a mystery.
+ * Never throws.
  */
 export function wake(): void {
   if (mockMode) return
-  void fetch(`${BASE}/health`).catch(() => undefined)
+  void apiFetch('/health').catch(() => undefined)
 }
 
 /** POST /api/solve. Throws ApiValidationError on an invalid cube (400). */

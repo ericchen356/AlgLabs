@@ -43,6 +43,7 @@ import {
 } from './records'
 import PreviewGrid from './PreviewGrid'
 import type { TrainerProps, TrainerScramble } from './types'
+import BootingNotice from '../backendStatus'
 import '../Trainer.css'
 
 /** Hint copy per phase — describes the hold/release mechanic (§12.3 / §12.4). */
@@ -308,6 +309,8 @@ export default function Trainer({ set, mode, caseId, onBackToSets }: TrainerProp
           </button>
         </div>
       )}
+
+      <BootingNotice compact />
 
       <div className="tr-body">
         <div className="tr-stage-col">

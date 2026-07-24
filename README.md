@@ -64,11 +64,13 @@ VITE_API_BASE = https://alglabs-api.onrender.com/api
 Free-tier caveats worth knowing:
 
 - Render idles the instance after ~15 minutes without traffic, and the next request pays a
-  cold start of roughly half a minute. The app pings `/api/health` on mount so that wake-up
-  overlaps with the home screen rather than with the user's first solve.
-- If the API is unreachable the UI silently drops into mock mode, which only solves one
-  built-in demo scramble and cannot scan. If scanning "disappears" in production, check the
-  API before anything else.
+  cold start of roughly half a minute. Two things absorb that: the app pings `/api/health` on
+  mount so the wake-up overlaps with the home screen, and any request outstanding for more
+  than 1.5s raises a "waking the server up" flag (header badge plus an inline note on the
+  scan, trainer, manual-entry and demo screens) so the wait never reads as a hang.
+- Requests give up after 90s. If the API is genuinely unreachable the UI drops into mock
+  mode, which only solves one built-in demo scramble and cannot scan. If scanning
+  "disappears" in production, check the API before anything else.
 - Webcam capture needs a secure context; both hosts serve HTTPS, so this is already fine.
 - `POST /api/scan-face` sends a base64 JPEG frame. Render does not cap request bodies the
   way serverless platforms do, so full-resolution frames are safe here.

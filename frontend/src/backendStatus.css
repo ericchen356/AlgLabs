@@ -1,0 +1,76 @@
+/* Cold-start signal — Paper Toy tokens, deliberately calm: this is a wait,
+   not a failure, so it borrows the dim/cut palette rather than --danger. */
+
+.booting-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  font: 400 12px/1.5 var(--mono);
+  color: var(--dim);
+  background: var(--surface);
+  border: 1px dashed var(--cut);
+  border-radius: var(--radius-card);
+  max-width: 52ch;
+}
+
+.booting-notice.compact {
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  font-size: 11px;
+}
+
+.booting-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font: 400 10px var(--mono);
+  color: var(--dim);
+  background: var(--surface);
+  border: 1px dashed var(--cut);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+/* Three ticking dots — the only motion, so the wait reads as progress. */
+.booting-dots {
+  display: inline-flex;
+  gap: 3px;
+  flex: none;
+}
+
+.booting-dots span {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: booting-pulse 1.2s ease-in-out infinite;
+}
+
+.booting-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.booting-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes booting-pulse {
+  0%,
+  70%,
+  100% {
+    opacity: 0.25;
+  }
+  35% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .booting-dots span {
+    animation: none;
+    opacity: 0.6;
+  }
+}

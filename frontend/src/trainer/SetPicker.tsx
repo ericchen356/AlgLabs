@@ -8,6 +8,7 @@
 import { useEffect, useState } from 'react'
 import { fetchSets } from './api'
 import type { SetKey, SetPickerProps, TrainerSet } from './types'
+import BootingNotice from '../backendStatus'
 import '../Trainer.css'
 
 /** CSS icon tiles (no image assets): tile color class + glyph per set. */
@@ -64,6 +65,7 @@ export default function SetPicker({ onBack, onRandomDrill, onChooseCase }: SetPi
         </div>
       )}
       {!error && !sets && <div className="tr-loading">loading sets…</div>}
+      <BootingNotice />
 
       {sets && (
         <div className="set-grid">

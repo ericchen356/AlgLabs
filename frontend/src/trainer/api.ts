@@ -9,10 +9,15 @@
  * ZBLL's 493 cases must load once and filter client-side (§12.4).
  */
 
-import { ApiUnavailableError } from '../api'
+import { apiFetch } from '../api'
 import type { SetKey, TrainerCase, TrainerScramble, TrainerSet } from './types'
 
-const BASE = '/api/trainer'
+/**
+ * Paths are relative to the shared API base (which `apiFetch` applies), so a
+ * split deploy pointing `VITE_API_BASE` at another origin moves the trainer
+ * with it.
+ */
+const BASE = '/trainer'
 
 interface TrainerErrorBody {
   valid: false
@@ -29,12 +34,7 @@ function isErrorBody(body: unknown): body is TrainerErrorBody {
 }
 
 async function get<T>(path: string): Promise<T> {
-  let res: Response
-  try {
-    res = await fetch(`${BASE}${path}`)
-  } catch {
-    throw new ApiUnavailableError()
-  }
+  const res = await apiFetch(`${BASE}${path}`)
   let body: unknown
   try {
     body = await res.json()

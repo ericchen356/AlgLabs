@@ -11,6 +11,7 @@ import { COLOR_HEX, FACE_ORDER, solvedFacelets } from './cubeModel'
 import * as api from './api'
 import './App.css'
 import Scanner from './Scanner'
+import BootingNotice, { BootingBadge } from './backendStatus'
 import Walkthrough from './Walkthrough'
 import { CasePick, Records, SetPicker, Trainer } from './trainer'
 import type { SetKey, TrainerMode } from './trainer'
@@ -253,6 +254,7 @@ function ManualEntry({ onSolved, onBack }: ManualEntryProps) {
           >
             {busy ? 'Solving…' : 'Solve it ▸'}
           </button>
+          <BootingNotice compact />
         </div>
       </div>
     </div>
@@ -311,6 +313,7 @@ export default function App() {
             CFOP <span className="accent">trainer</span>
           </span>
         </button>
+        <BootingBadge />
         {mockNotice && <span className="mock-badge">mock mode — backend offline</span>}
         <nav className="header-nav">
           <button className="nav-pill" onClick={goSetpick}>
@@ -400,6 +403,7 @@ export default function App() {
               </button>
             </div>
             {demoError && <div className="failure landing-error">{demoError}</div>}
+            <BootingNotice />
           </div>
         )}
 

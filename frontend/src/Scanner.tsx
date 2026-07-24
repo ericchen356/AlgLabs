@@ -24,6 +24,7 @@ import * as api from './api'
 import { SCAN_STEPS, faceLabel } from './scan/steps'
 import { StabilityTracker, hueMatchesFace, type RGB } from './scan/stability'
 import PoseCube from './scan/PoseCube'
+import BootingNotice from './backendStatus'
 import './Scanner.css'
 
 /** Guide-box side as a fraction of min(video width, height). */
@@ -234,6 +235,9 @@ export default function Scanner({ onSolved, onManualEntry, onBack }: ScannerProp
     if (!scanning) return
     let cancelled = false
     let stream: MediaStream | null = null
+    // Captured now: on cleanup the ref may already point at a different (or
+    // unmounted) element, and this effect owns *this* element's srcObject.
+    const video = videoRef.current
     setCameraState('starting')
 
     const start = async () => {
@@ -260,7 +264,6 @@ export default function Scanner({ onSolved, onManualEntry, onBack }: ScannerProp
           stream.getTracks().forEach((t) => t.stop())
           return
         }
-        const video = videoRef.current
         if (video) {
           video.srcObject = stream
           await video.play().catch(() => {})
@@ -287,7 +290,7 @@ export default function Scanner({ onSolved, onManualEntry, onBack }: ScannerProp
     return () => {
       cancelled = true
       stream?.getTracks().forEach((t) => t.stop())
-      if (videoRef.current) videoRef.current.srcObject = null
+      if (video) video.srcObject = null
     }
   }, [scanning])
 
@@ -516,6 +519,7 @@ export default function Scanner({ onSolved, onManualEntry, onBack }: ScannerProp
         </div>
         {chips}
         <p className="hint">Reading the colors of all 54 stickers…</p>
+        <BootingNotice />
       </div>
     )
   }
@@ -622,6 +626,8 @@ export default function Scanner({ onSolved, onManualEntry, onBack }: ScannerProp
               />
             </label>
           </div>
+
+          <BootingNotice compact />
 
           {lastCapture && (
             <div className="last-capture">
@@ -789,6 +795,7 @@ function ReviewScreen({
           {solveBusy ? 'Solving…' : 'All six faces read — Solve it ▸'}
         </button>
       )}
+      <BootingNotice compact />
     </div>
   )
 }

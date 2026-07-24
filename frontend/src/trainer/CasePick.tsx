@@ -13,6 +13,7 @@ import { fmtMs } from './machine'
 import { loadRecords } from './records'
 import PreviewGrid from './PreviewGrid'
 import type { CasePickProps, TrainerCase } from './types'
+import BootingNotice from '../backendStatus'
 import '../Trainer.css'
 
 interface CaseTileProps {
@@ -93,6 +94,7 @@ export default function CasePick({ set, onBack, onPickCase }: CasePickProps) {
 
       {error && <div className="failure">{error}</div>}
       {!error && !cases && <div className="tr-loading">loading cases…</div>}
+      <BootingNotice />
 
       {cases && groups.length > 1 && (
         <div className="group-tabs">
