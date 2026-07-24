@@ -39,6 +39,40 @@ cd backend && uv run pytest          # cube core, solver, vision, API, trainer e
 cd frontend && npm run test          # notation, cube model, scan logic, trainer machines/records
 ```
 
+## Deploy (split: Vercel + Render, both free tiers)
+
+The frontend is a static bundle; the backend needs OpenCV/SciPy and is too large for a
+serverless function, so it runs as a small always-addressable web service instead. Both
+halves are described by checked-in config - there is nothing to configure by hand beyond
+two values.
+
+**1. Backend on Render.** New → Blueprint → point it at this repo. `render.yaml` builds
+`backend/requirements.txt` and starts `uvicorn app:app`; the free plan needs no card. Note
+the resulting URL, e.g. `https://alglabs-api.onrender.com`.
+
+**2. Frontend on Vercel.** Import the repo. `vercel.json` at the root already sets the
+build (`frontend/`, Vite, SPA fallback). Add one Environment Variable before the first
+build:
+
+```
+VITE_API_BASE = https://alglabs-api.onrender.com/api
+```
+
+**3. Lock down CORS.** Back on Render, set `ALGLABS_ALLOWED_ORIGINS` to your Vercel URL
+(comma-separated if you keep preview domains), replacing the `*` default.
+
+Free-tier caveats worth knowing:
+
+- Render idles the instance after ~15 minutes without traffic, and the next request pays a
+  cold start of roughly half a minute. The app pings `/api/health` on mount so that wake-up
+  overlaps with the home screen rather than with the user's first solve.
+- If the API is unreachable the UI silently drops into mock mode, which only solves one
+  built-in demo scramble and cannot scan. If scanning "disappears" in production, check the
+  API before anything else.
+- Webcam capture needs a secure context; both hosts serve HTTPS, so this is already fine.
+- `POST /api/scan-face` sends a base64 JPEG frame. Render does not cap request bodies the
+  way serverless platforms do, so full-resolution frames are safe here.
+
 ## Docs
 
 - [docs/CONTRACTS.md](docs/CONTRACTS.md) — engineering conventions: facelet/cubie model,

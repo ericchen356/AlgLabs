@@ -5,7 +5,7 @@
  * (setpick / casepick / trainer / records) rendered from src/trainer.
  */
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { FaceLetter, SolveResponse, ValidationError } from './types'
 import { COLOR_HEX, FACE_ORDER, solvedFacelets } from './cubeModel'
 import * as api from './api'
@@ -264,6 +264,9 @@ export default function App() {
   const [demoBusy, setDemoBusy] = useState(false)
   const [demoError, setDemoError] = useState<string | null>(null)
   const [mockNotice, setMockNotice] = useState(api.isMockMode())
+
+  // Wake an idled API instance while the user is still on the home screen.
+  useEffect(() => api.wake(), [])
 
   const runDemo = async () => {
     setDemoBusy(true)

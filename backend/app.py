@@ -6,10 +6,12 @@ Endpoints:
 * ``GET  /api/scramble``  — 25-move random scramble + resulting facelets.
 * ``POST /api/scan-face`` — sample the 9 sticker patches of one face image.
 * ``POST /api/classify``  — 54 Lab samples -> facelet string + §5 validation.
+* ``GET  /api/health``    — liveness probe / wake-up ping.
 """
 
 from __future__ import annotations
 
+import os
 import random
 from typing import Any
 
@@ -28,9 +30,18 @@ from vision.sampling import SamplingError, sample_face
 
 app = FastAPI(title="CubeSight API")
 
+#: Origins allowed to call the API. Split deploys serve the frontend from a
+#: different host (Vercel) than the API (Render), so this is configurable;
+#: "*" keeps local dev and the dev proxy working out of the box.
+_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("ALGLABS_ALLOWED_ORIGINS", "*").split(",")
+    if origin.strip()
+] or ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_ALLOWED_ORIGINS,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -62,6 +73,12 @@ def _error_response(status: int, errors: list[dict[str, Any]]) -> JSONResponse:
 # --------------------------------------------------------------------------- #
 # Routes
 # --------------------------------------------------------------------------- #
+
+
+@app.get("/api/health")
+def health() -> dict[str, str]:
+    """Liveness probe; also the frontend's wake-up ping for idle free hosts."""
+    return {"status": "ok"}
 
 
 @app.post("/api/solve")

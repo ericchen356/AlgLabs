@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: alglabs-api
+    runtime: python
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      # Comma-separated origins allowed to call the API. Set this to your
+      # Vercel URL(s) after the first frontend deploy; "*" until then.
+      - key: ALGLABS_ALLOWED_ORIGINS
+        value: "*"

@@ -26,7 +26,13 @@ import type {
 import { applyMovesToFacelets, solvedFacelets } from './cubeModel'
 import { invertSequence, moveToString, parseSequence } from './notation'
 
-const BASE = '/api'
+/**
+ * API base path. Defaults to the same-origin `/api` (the dev server proxies
+ * it to 127.0.0.1:8010). On a split deploy the frontend and the API live on
+ * different hosts, so set `VITE_API_BASE` to the API origin at build time,
+ * e.g. `https://alglabs-api.onrender.com/api`.
+ */
+const BASE = (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, '') || '/api'
 
 /** The backend rejected the cube as invalid (§5). */
 export class ApiValidationError extends Error {
@@ -195,6 +201,17 @@ function postInit(payload: unknown): RequestInit {
 // ---------------------------------------------------------------------------
 // Endpoints
 // ---------------------------------------------------------------------------
+
+/**
+ * GET /api/health, fire-and-forget. Free API hosts idle their instance out
+ * after inactivity and take tens of seconds to boot; pinging on app mount
+ * overlaps that wake-up with the user reading the home screen instead of
+ * with their first solve. Never throws.
+ */
+export function wake(): void {
+  if (mockMode) return
+  void fetch(`${BASE}/health`).catch(() => undefined)
+}
 
 /** POST /api/solve. Throws ApiValidationError on an invalid cube (400). */
 export async function solve(facelets: string): Promise<SolveResponse> {
