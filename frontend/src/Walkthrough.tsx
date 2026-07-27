@@ -290,7 +290,7 @@ export default function Walkthrough({ solve, initialFacelets, onExit }: Walkthro
                       onClick={() => jumpTo(s.start)}
                     >
                       <span>{s.step.label}</span>
-                      <span className="walk-step-item-notation">{s.step.notation || '—'}</span>
+                      <span className="walk-step-item-notation">{s.step.notation || '-'}</span>
                     </button>
                   )
                 })}

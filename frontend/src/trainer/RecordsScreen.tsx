@@ -27,10 +27,10 @@ function RecordRow({ c, rec, isBest }: RowProps) {
         <span className="rec-dot" aria-hidden />
         {c.name}
       </span>
-      <span className="rec-num">{rec?.recog !== undefined ? fmtMs(rec.recog) : '—'}</span>
-      <span className="rec-num">{rec ? fmtMs(rec.exec) : '—'}</span>
+      <span className="rec-num">{rec?.recog !== undefined ? fmtMs(rec.recog) : '-'}</span>
+      <span className="rec-num">{rec ? fmtMs(rec.exec) : '-'}</span>
       <span className={`rec-num rec-best${isBest ? ' top' : ''}`}>
-        {rec?.total !== undefined ? fmtMs(rec.total) : '—'}
+        {rec?.total !== undefined ? fmtMs(rec.total) : '-'}
       </span>
       <span className="rec-num">{rec?.n ?? 0}</span>
     </div>

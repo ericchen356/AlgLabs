@@ -107,7 +107,7 @@ def test_solve_oll_orients_200_random_ll_states():
             continue
         assert isinstance(step, OllStep)
         assert 1 <= step.case_id <= 57
-        assert step.label == f"OLL {step.case_id} — {step.name}"
+        assert step.label == f"OLL {step.case_id} · {step.name}"
         assert all(m in MOVE_TOKENS for m in step.moves)
         after = apply_moves(state, step.moves)
         assert ll_is_oriented(after), f"iteration {i}: OLL {step.case_id} failed"

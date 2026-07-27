@@ -49,18 +49,18 @@ import '../Trainer.css'
 /** Hint copy per phase — describes the hold/release mechanic (§12.3 / §12.4). */
 const HINTS = {
   random: {
-    idle: 'hold SPACE (or press the timer) to recognize — release to start solving',
+    idle: 'hold SPACE (or press the timer) to recognize, release to start solving',
     armed: '', // unreachable in random mode
     recognition: 'recognizing… release to start solving',
     execution: 'solving… press SPACE the instant you finish',
-    done: 'case added to your records ✓ — press SPACE for the next scramble',
+    done: 'case added to your records ✓ · press SPACE for the next scramble',
   },
   grind: {
     idle: 'hold SPACE (or the timer), then release to start the timer',
     armed: 'release to start…',
     recognition: '', // unreachable in grind mode
     execution: 'solving… press SPACE the instant you finish',
-    done: 'logged ✓ — press SPACE for a new scramble of this case',
+    done: 'logged ✓ · press SPACE for a new scramble of this case',
   },
 } as const
 
@@ -275,9 +275,9 @@ export default function Trainer({ set, mode, caseId, onBackToSets }: TrainerProp
 
   const caption =
     mode === 'grind' && phase === 'idle'
-      ? 'the case, scrambled — check your setup'
+      ? 'the case, scrambled · check your setup'
       : ghostAvailable && pbMs !== undefined
-        ? `plays your ${fmtMs(pbMs)}s solve — beat it`
+        ? `plays your ${fmtMs(pbMs)}s solve · beat it`
         : 'set a PB and the ghost appears here'
 
   return (
@@ -293,7 +293,7 @@ export default function Trainer({ set, mode, caseId, onBackToSets }: TrainerProp
             <PreviewGrid preview={scr.preview} className="tr-head-preview" />
           </span>
         ) : (
-          <span className="tr-case hidden-case">case hidden — recognize it</span>
+          <span className="tr-case hidden-case">case hidden · recognize it</span>
         )}
         <span className="tr-scramble">
           {error ? '' : scr ? scr.scramble : 'fetching scramble…'}

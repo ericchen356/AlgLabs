@@ -42,7 +42,7 @@ async function get<T>(path: string): Promise<T> {
     throw new Error(`Unexpected non-JSON response from /trainer${path} (HTTP ${res.status})`)
   }
   if (isErrorBody(body)) {
-    throw new Error(body.errors.map((e) => e.message).join(' — ') || 'Trainer request rejected')
+    throw new Error(body.errors.map((e) => e.message).join('; ') || 'Trainer request rejected')
   }
   if (!res.ok) throw new Error(`${BASE}${path} failed (HTTP ${res.status})`)
   return body as T

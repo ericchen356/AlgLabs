@@ -20,6 +20,15 @@ const SET_ICONS: Record<SetKey, { className: string; glyph: string }> = {
   vls: { className: 'yellow', glyph: 'V' },
 }
 
+/** What each acronym stands for, spelled out on the set cards. */
+const SET_FULL_NAMES: Record<SetKey, string> = {
+  oll: 'Orientation of the Last Layer',
+  pll: 'Permutation of the Last Layer',
+  coll: 'Corners of the Last Layer',
+  zbll: 'Zborowski-Bruchem Last Layer',
+  vls: 'Valk Last Slot',
+}
+
 const TILTS = ['tilt-a', 'tilt-b', 'tilt-c', 'tilt-d'] as const
 
 export default function SetPicker({ onBack, onRandomDrill, onChooseCase }: SetPickerProps) {
@@ -52,8 +61,8 @@ export default function SetPicker({ onBack, onRandomDrill, onChooseCase }: SetPi
         <h2 className="screen-title big">Choose what to drill</h2>
       </div>
       <p className="hint">
-        Each set feeds you a random scramble for one of its cases. Time your recognition, then
-        your execution — or pick one case and grind it.
+        Each set gives you a random scramble from one of its cases. Time your recognition,
+        then your execution, or pick a single case and grind it.
       </p>
 
       {error && (
@@ -79,6 +88,7 @@ export default function SetPicker({ onBack, onRandomDrill, onChooseCase }: SetPi
                   </span>
                   <span className="set-card-text">
                     <span className="set-name">{s.name}</span>
+                    <span className="set-fullname">{SET_FULL_NAMES[s.key]}</span>
                     <span className="set-sub">
                       {s.count} cases · {s.description}
                     </span>

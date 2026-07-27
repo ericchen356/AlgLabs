@@ -154,7 +154,7 @@ def solve_oll(state: CubieState) -> OllStep | None:
     return OllStep(
         case_id=case.id,
         name=case.name,
-        label=f"OLL {case.id} — {case.name}",
+        label=f"OLL {case.id} · {case.name}",
         moves=list(moves),
     )
 

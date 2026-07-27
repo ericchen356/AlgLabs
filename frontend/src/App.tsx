@@ -149,7 +149,7 @@ function ManualEntry({ onSolved, onBack }: ManualEntryProps) {
       } else if (err instanceof api.ApiUnavailableError) {
         setFailure(
           err.message === 'Backend unreachable'
-            ? 'Backend unreachable — start the API server, or try the demo scramble (it works offline in mock mode).'
+            ? 'Backend unreachable. Start the API server, or try the demo scramble, which works offline in mock mode.'
             : err.message,
         )
       } else {
@@ -233,7 +233,7 @@ function ManualEntry({ onSolved, onBack }: ManualEntryProps) {
             </div>
           )}
           {pasteProblems && pasteProblems.length === 0 && (
-            <div className="local-ok">Passes local checks — apply it to the net.</div>
+            <div className="local-ok">Looks valid. Apply it to the net.</div>
           )}
 
           {netProblems.length > 0 && (
@@ -314,7 +314,7 @@ export default function App() {
           </span>
         </button>
         <BootingBadge />
-        {mockNotice && <span className="mock-badge">mock mode — backend offline</span>}
+        {mockNotice && <span className="mock-badge">mock mode · backend offline</span>}
         <nav className="header-nav">
           <button className="nav-pill" onClick={goSetpick}>
             Train
@@ -336,8 +336,8 @@ export default function App() {
                 </span>
                 <span className="mode-title">Solve a cube</span>
                 <span className="mode-desc">
-                  Scan with your camera, paint the net, or roll a demo — then watch the animated
-                  CFOP walkthrough.
+                  Scan with your camera, paint the net, or roll a demo, then watch the CFOP
+                  walkthrough play out in 3D.
                 </span>
                 <span className="pill-cta">Enter ▸</span>
               </button>
@@ -347,8 +347,8 @@ export default function App() {
                 </span>
                 <span className="mode-title">Train algorithms</span>
                 <span className="mode-desc">
-                  Drill OLL / PLL / COLL / ZBLL / VLS with split recognition &amp; execution
-                  timing — and a ghost cube of your PB to race.
+                  Drill OLL, PLL, COLL, ZBLL and VLS. Separate timers for recognition and
+                  execution, plus a ghost of your best solve to race.
                 </span>
                 <span className="pill-cta">Start ▸</span>
               </button>
@@ -369,7 +369,7 @@ export default function App() {
                 </span>
                 <span className="entry-title">Scan with camera</span>
                 <span className="entry-desc">
-                  Point your webcam at each face — AlgLabs reads the colors.
+                  Point your webcam at each face and AlgLabs reads the colors.
                 </span>
               </button>
               <button className="entry-card" onClick={() => setView({ kind: 'manual' })}>
@@ -454,6 +454,22 @@ export default function App() {
 
         {view.kind === 'records' && <Records onBack={goHome} />}
       </main>
+
+      <footer className="app-footer">
+        <span>Made by Eric Chen</span>
+        <span className="footer-sep" aria-hidden>
+          ·
+        </span>
+        <a href="https://ericzxchen.com" target="_blank" rel="noreferrer">
+          ericzxchen.com
+        </a>
+        <span className="footer-sep" aria-hidden>
+          ·
+        </span>
+        <a href="https://github.com/ericchen356/AlgLabs" target="_blank" rel="noreferrer">
+          GitHub
+        </a>
+      </footer>
     </div>
   )
 }

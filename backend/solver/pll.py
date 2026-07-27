@@ -188,7 +188,7 @@ def solve_pll(state: CubieState) -> PllStep | None:
     return PllStep(
         case_id=case.id,
         name=case.name,
-        label=f"PLL {case.id} — {case.name}",
+        label=f"PLL {case.id} · {case.name}",
         moves=list(moves),
     )
 

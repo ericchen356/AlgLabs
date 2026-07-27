@@ -134,7 +134,7 @@ function loadImageFile(file: File): Promise<HTMLImageElement> {
 
 function errorMessage(err: unknown): string {
   if (err instanceof api.ApiUnavailableError) {
-    return 'Backend unreachable — scanning needs the API server running.'
+    return 'Backend unreachable. Scanning needs the API server running.'
   }
   return err instanceof Error ? err.message : String(err)
 }
@@ -342,7 +342,7 @@ export default function Scanner({ onSolved, onManualEntry, onBack }: ScannerProp
         if (!res.quality.ok) {
           setScanError(
             res.quality.message ||
-              'That capture was too noisy — hold the cube steady and try again.',
+              'That capture was too noisy. Hold the cube steady and try again.',
           )
           rearm()
           return
@@ -545,7 +545,7 @@ export default function Scanner({ onSolved, onManualEntry, onBack }: ScannerProp
   const statusLine = scanBusy
     ? 'reading colors…'
     : steady
-      ? 'steady — capturing…'
+      ? 'steady, capturing…'
       : cameraState === 'ready'
         ? hueOk
           ? `hold the ${currentStep.colorName} face steady inside the frame`
@@ -601,7 +601,7 @@ export default function Scanner({ onSolved, onManualEntry, onBack }: ScannerProp
             <div className="scan-face-now">
               <span className="face-dot" style={{ background: currentStep.hex }} />
               <span>
-                Face {stepIndex + 1} of 6 — {currentStep.colorName} ({currentStep.face})
+                Face {stepIndex + 1} of 6 · {currentStep.colorName} ({currentStep.face})
               </span>
             </div>
             <p className="hint">{currentStep.instruction}</p>
@@ -774,14 +774,14 @@ function ReviewScreen({
       </div>
       {chips}
       <p className="hint">
-        Every sticker as AlgLabs read it. Pulsing cells were ambiguous or low-confidence —
+        Every sticker as AlgLabs read it. Pulsing cells were ambiguous or low-confidence, so
         re-scan their face if they look wrong.
       </p>
 
       <div className="net-grid review-net">{netCells}</div>
 
       {result.valid ? (
-        <div className="local-ok">The cube is valid — ready to solve.</div>
+        <div className="local-ok">The cube is valid and ready to solve.</div>
       ) : (
         <ValidationErrorList errors={result.errors} />
       )}
@@ -792,7 +792,7 @@ function ReviewScreen({
 
       {result.valid && (
         <button className="btn-ink solve-btn" onClick={onSolve} disabled={solveBusy}>
-          {solveBusy ? 'Solving…' : 'All six faces read — Solve it ▸'}
+          {solveBusy ? 'Solving…' : 'All six faces read · Solve it ▸'}
         </button>
       )}
       <BootingNotice compact />

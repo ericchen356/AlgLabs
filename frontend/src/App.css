@@ -21,6 +21,32 @@
   margin: 0 auto;
 }
 
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  padding: 18px 30px 26px;
+  font: 400 11px var(--mono);
+  color: var(--dim);
+}
+
+.app-footer a {
+  color: var(--dim);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--cut);
+}
+
+.app-footer a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.app-footer .footer-sep {
+  color: var(--cut);
+}
+
 /* ---------- header ---------- */
 
 .app-header {

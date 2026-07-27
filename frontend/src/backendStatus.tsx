@@ -26,8 +26,8 @@ export default function BootingNotice({ compact = false }: { compact?: boolean }
         <span />
         <span />
       </span>
-      Waking the server up — it sleeps when nobody is using it. This first request can take
-      up to a minute; everything is quick afterwards.
+      Waking the server up. It sleeps when nobody is using it, so this first request can take
+      up to a minute. Everything is quick afterwards.
     </p>
   )
 }

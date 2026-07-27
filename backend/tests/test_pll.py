@@ -120,7 +120,7 @@ def test_pipeline_solves_200_random_ll_states():
         else:
             assert isinstance(pll_step, PllStep)
             assert pll_step.case_id in PLL_IDS
-            assert pll_step.label == f"PLL {pll_step.case_id} — {pll_step.name}"
+            assert pll_step.label == f"PLL {pll_step.case_id} · {pll_step.name}"
             assert all(m in MOVE_TOKENS for m in pll_step.moves)
             state = apply_moves(state, pll_step.moves)
 

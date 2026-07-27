@@ -89,7 +89,7 @@ export default function CasePick({ set, onBack, onPickCase }: CasePickProps) {
         <button className="back-link" onClick={onBack}>
           ← sets
         </button>
-        <h2 className="screen-title big">{set.toUpperCase()} — pick a case to grind</h2>
+        <h2 className="screen-title big">{set.toUpperCase()} · pick a case to grind</h2>
       </div>
 
       {error && <div className="failure">{error}</div>}

@@ -38,7 +38,7 @@ const BASE = (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$
 export class ApiValidationError extends Error {
   readonly errors: ValidationError[]
   constructor(errors: ValidationError[]) {
-    super(errors.map((e) => e.message).join(' — ') || 'Invalid cube')
+    super(errors.map((e) => e.message).join('; ') || 'Invalid cube')
     this.name = 'ApiValidationError'
     this.errors = errors
   }
@@ -143,12 +143,12 @@ function buildMockFixture(): MockFixture {
     {
       id: 'oll',
       label: 'OLL',
-      steps: [takeStep('OLL — demo case', 'OLL (demo)', 1, LL_HIGHLIGHT)],
+      steps: [takeStep('OLL demo case', 'OLL (demo)', 1, LL_HIGHLIGHT)],
     },
     {
       id: 'pll',
       label: 'PLL',
-      steps: [takeStep('PLL — demo case', 'PLL (demo)', 1, LL_HIGHLIGHT)],
+      steps: [takeStep('PLL demo case', 'PLL (demo)', 1, LL_HIGHLIGHT)],
     },
   ]
 
@@ -282,7 +282,7 @@ export async function solve(facelets: string): Promise<SolveResponse> {
     const fixture = getMockFixture()
     if (facelets === fixture.scramble.facelets) return fixture.solve
     throw new ApiUnavailableError(
-      'Mock mode can only solve the built-in demo scramble — start the backend to solve arbitrary cubes.',
+      'Mock mode can only solve the built-in demo scramble. Start the backend to solve arbitrary cubes.',
     )
   }
   const { status, body } = await request<SolveResponse | SolveErrorResponse>(
