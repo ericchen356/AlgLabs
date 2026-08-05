@@ -1,20 +1,25 @@
 /**
  * Trainer screen (CONTRACTS.md §12.3 random mode / §12.4 grind variant).
  *
- * Random: idle → recognition → execution → done. The case is HIDDEN until
- * done (design ⚠️ #2) — the server sends name/preview but they are not
- * rendered before the done phase. Cube stage: hidden "?" during idle +
- * recognition; during execution a ghost (real CubeView) plays the CURRENT
- * scramble's solution, tween-scaled so the playback lasts the PB total.
+ * Random: idle → recognition → execution → idle. The case is never named, and
+ * neither is its PB (no header chip, no time in the stage caption) — an exact
+ * best time would narrow down which case you are looking at. Cube stage:
+ * hidden "?" during idle + recognition;
+ * during execution a ghost (real CubeView) plays the CURRENT scramble's
+ * solution, tween-scaled so the playback lasts the PB total. Stopping the
+ * timer immediately fetches the next scramble and re-arms, so the user just
+ * keeps going; the splits of the finished solve stay on screen until the next
+ * solve starts.
  *
- * Grind: idle → execution → done for ONE case; header shows the case name +
- * preview openly; a single EXEC split; the cube stage shows the case state
- * while idle and the ghost (scaled to PB exec) during execution. Each
- * done→idle fetches a fresh scramble for the same case_id.
+ * Grind: idle → armed → execution → idle for ONE case; header shows the case
+ * name + preview openly; a single EXEC split; the cube stage shows the case
+ * state while idle and the ghost (scaled to PB exec) during execution. The
+ * scramble is fetched ONCE per case — the case never changes, so neither does
+ * its setup — and stopping the timer re-arms for the next rep.
  *
  * Advance = Space (ignored while an input is focused) or tapping the big
- * timer panel. Live timers tick per animation frame, formatted
- * (ms/1000).toFixed(2).
+ * timer panel; while the solve timer runs, ANY key stops it. Live timers tick
+ * per animation frame, formatted (ms/1000).toFixed(2).
  */
 
 import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -26,6 +31,7 @@ import {
   fmtMs,
   initialMachine,
   isRunning,
+  justFinished,
   liveSplits,
   pushSession,
   stepMachine,
@@ -41,6 +47,7 @@ import {
   saveRecords,
   type RecordsState,
 } from './records'
+import { appendSolve, loadSolves, saveSolves, type SolvesState } from './solves'
 import PreviewGrid from './PreviewGrid'
 import type { TrainerProps, TrainerScramble } from './types'
 import BootingNotice from '../backendStatus'
@@ -52,16 +59,20 @@ const HINTS = {
     idle: 'hold SPACE (or press the timer) to recognize, release to start solving',
     armed: '', // unreachable in random mode
     recognition: 'recognizing… release to start solving',
-    execution: 'solving… press SPACE the instant you finish',
-    done: 'case added to your records ✓ · press SPACE for the next scramble',
+    execution: 'solving… hit any key the instant you finish',
   },
   grind: {
     idle: 'hold SPACE (or the timer), then release to start the timer',
     armed: 'release to start…',
     recognition: '', // unreachable in grind mode
-    execution: 'solving… press SPACE the instant you finish',
-    done: 'logged ✓ · press SPACE for a new scramble of this case',
+    execution: 'solving… hit any key the instant you finish',
   },
+} as const
+
+/** Idle hint right after a solve — the drill has already re-armed itself. */
+const FINISHED_HINTS = {
+  random: 'logged ✓ · next scramble ready · hold SPACE to go again',
+  grind: 'logged ✓ · hold SPACE for the next rep',
 } as const
 
 export default function Trainer({ set, mode, caseId, onBackToSets }: TrainerProps) {
@@ -70,6 +81,7 @@ export default function Trainer({ set, mode, caseId, onBackToSets }: TrainerProp
   const [machine, setMachine] = useState<TrainerMachine>(() => initialMachine(mode))
   const [now, setNow] = useState(0)
   const [records, setRecords] = useState<RecordsState>(() => loadRecords())
+  const [solves, setSolves] = useState<SolvesState>(() => loadSolves())
   const [session, setSession] = useState<SessionEntry[]>([])
   const [lastWasPB, setLastWasPB] = useState(false)
 
@@ -132,18 +144,28 @@ export default function Trainer({ set, mode, caseId, onBackToSets }: TrainerProp
         setRecords(update.records)
         saveRecords(update.records)
         setLastWasPB(update.isPB)
+        // Log the solve itself (§12.6). Random solves carry their recognition
+        // split; grind reps have none, which is what marks them as grind.
+        const history = appendSolve(solves, set, scr.case_id, {
+          ...(mode === 'random' && { recog: state.recogMs }),
+          exec: state.execMs,
+          at: Date.now(),
+        })
+        setSolves(history)
+        saveSolves(history)
         setSession((s) =>
           pushSession(s, {
             ms: mode === 'random' ? state.recogMs + state.execMs : state.execMs,
             isPB: update.isPB,
           }),
         )
-      } else if (event === 'next') {
-        ghostRun.current++
-        void loadScramble() // fresh scramble: same case in grind, new random draw otherwise
+        // The machine already re-armed itself to `idle`. Random mode needs a
+        // new draw for the next solve; grind keeps the one case (and so its one
+        // scramble) it was chosen to drill.
+        if (mode === 'random') void loadScramble()
       }
     },
-    [scr, machine, mode, records, set, loadScramble],
+    [scr, machine, mode, records, solves, set, loadScramble],
   )
 
   // Latest `step` in a ref so the window listeners (registered once) never go
@@ -151,9 +173,15 @@ export default function Trainer({ set, mode, caseId, onBackToSets }: TrainerProp
   const stepRef = useRef(step)
   stepRef.current = step
 
+  // The live phase for the key handler, which is registered once.
+  const phaseRef = useRef(phase)
+  phaseRef.current = phase
+
   // Space press/release drives the machine — ignored while an input is focused
   // (§12.3). Holding Space auto-repeats keydown; `e.repeat` filters that so a
-  // hold is exactly one `down` and one `up`.
+  // hold is exactly one `down` and one `up`. While the solve timer runs, ANY
+  // key stops it (stackmat convention: whichever hand lands first wins) — only
+  // Space produces the `up` edge, so a non-Space stop leaves no stray release.
   useEffect(() => {
     const inField = (t: EventTarget | null): boolean => {
       const el = t as HTMLElement | null
@@ -166,8 +194,26 @@ export default function Trainer({ set, mode, caseId, onBackToSets }: TrainerProp
       )
     }
     const isSpace = (e: KeyboardEvent) => e.code === 'Space' || e.key === ' '
+    /** Bare modifiers can't stop a solve — the palm resting on Shift shouldn't. */
+    const isBareModifier = (e: KeyboardEvent) =>
+      e.key === 'Shift' ||
+      e.key === 'Control' ||
+      e.key === 'Alt' ||
+      e.key === 'Meta' ||
+      e.key === 'CapsLock'
     const onKeyDown = (e: KeyboardEvent) => {
-      if (!isSpace(e) || e.repeat || inField(e.target)) return
+      if (e.repeat || inField(e.target)) return
+      if (!isSpace(e)) {
+        // Any other key is a stop, and only a stop. Chords (⌘R, ⌘L, …) stay
+        // browser shortcuts.
+        const stops =
+          phaseRef.current === 'execution' &&
+          !isBareModifier(e) &&
+          !e.metaKey &&
+          !e.ctrlKey &&
+          !e.altKey
+        if (!stops) return
+      }
       e.preventDefault()
       stepRef.current('down')
     }
@@ -265,20 +311,26 @@ export default function Trainer({ set, mode, caseId, onBackToSets }: TrainerProp
   // ---- derived display ----------------------------------------------------
 
   const splits = liveSplits(machine, now)
-  const revealed = mode === 'grind' || phase === 'done'
-  const hint = HINTS[mode][phase]
-  const recogMark =
-    phase === 'recognition' ? '●' : phase === 'execution' || phase === 'done' ? '✓' : ''
-  const execMark = phase === 'execution' ? '●' : phase === 'done' ? '✓' : ''
+  // Idle-holding-the-last-result: splits stay frozen on screen, marks stay
+  // ticked, and the newest session chip pops.
+  const finished = justFinished(machine)
+  const hint = finished ? FINISHED_HINTS[mode] : HINTS[mode][phase]
+  const recogMark = phase === 'recognition' ? '●' : phase === 'execution' || finished ? '✓' : ''
+  const execMark = phase === 'execution' ? '●' : finished ? '✓' : ''
   const bigMs = mode === 'random' ? splits.total : splits.exec
   const bigColor = mode === 'random' && phase === 'recognition' ? 'recog' : 'exec'
 
+  // Random mode must not print the PB anywhere: the case is hidden, and its
+  // exact best time would narrow down which case it is. Grind names the case
+  // openly, so the number is free to show there.
   const caption =
-    mode === 'grind' && phase === 'idle'
-      ? 'the case, scrambled · check your setup'
-      : ghostAvailable && pbMs !== undefined
-        ? `plays your ${fmtMs(pbMs)}s solve · beat it`
-        : 'set a PB and the ghost appears here'
+    mode === 'random'
+      ? 'your best solve plays here as a ghost · beat it'
+      : phase === 'idle'
+        ? 'the case, scrambled · check your setup'
+        : ghostAvailable && pbMs !== undefined
+          ? `plays your ${fmtMs(pbMs)}s solve · beat it`
+          : 'set a PB and the ghost appears here'
 
   return (
     <div className="screen trainer">
@@ -287,8 +339,8 @@ export default function Trainer({ set, mode, caseId, onBackToSets }: TrainerProp
           ← sets
         </button>
         <span className="tr-chip">{mode === 'grind' ? 'grinding' : set.toUpperCase()}</span>
-        {revealed && scr ? (
-          <span className={`tr-case revealed${lastWasPB && phase === 'done' ? ' pop' : ''}`}>
+        {mode === 'grind' && scr ? (
+          <span className={`tr-case revealed${lastWasPB && finished ? ' pop' : ''}`}>
             {scr.name}
             <PreviewGrid preview={scr.preview} className="tr-head-preview" />
           </span>
@@ -298,7 +350,11 @@ export default function Trainer({ set, mode, caseId, onBackToSets }: TrainerProp
         <span className="tr-scramble">
           {error ? '' : scr ? scr.scramble : 'fetching scramble…'}
         </span>
-        <span className="tr-pb-chip">{pbMs !== undefined ? `PB ${fmtMs(pbMs)}` : 'no PB yet'}</span>
+        {mode === 'grind' && (
+          <span className="tr-pb-chip">
+            {pbMs !== undefined ? `PB ${fmtMs(pbMs)}` : 'no PB yet'}
+          </span>
+        )}
       </div>
 
       {error && (
@@ -368,7 +424,7 @@ export default function Trainer({ set, mode, caseId, onBackToSets }: TrainerProp
             {session.map((a, i) => (
               <span
                 key={session.length - i}
-                className={`tr-session-chip${a.isPB ? ' pb' : ''}${i === 0 && phase === 'done' ? ' pop' : ''}`}
+                className={`tr-session-chip${a.isPB ? ' pb' : ''}${i === 0 && finished ? ' pop' : ''}`}
               >
                 {fmtMs(a.ms)}
               </span>

@@ -565,12 +565,47 @@
 
 .rec-row {
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr 1fr 0.7fr;
+  grid-template-columns: 1.7fr 1fr 1fr 1fr 1fr 0.7fr;
   align-items: center;
   padding: 9px 10px;
   border-bottom: 1px solid var(--border);
   font: 500 12px var(--mono);
   color: var(--ink);
+}
+
+/* Rows are buttons: a case with records opens its solve history. */
+.rec-row-btn {
+  width: 100%;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.rec-row-btn:disabled {
+  cursor: default;
+}
+
+.rec-row-btn:not(:disabled):hover {
+  background: var(--paper);
+}
+
+.rec-row-btn.open {
+  background: var(--paper);
+  border-bottom-color: transparent;
+}
+
+.rec-arrow {
+  width: 9px;
+  flex: none;
+  font: 400 9px var(--mono);
+  color: var(--dim);
+}
+
+.rec-row-btn.open .rec-arrow {
+  color: var(--accent);
 }
 
 .rec-row:last-child {
@@ -658,6 +693,178 @@
   color: var(--dim);
 }
 
+.rec-summary {
+  margin: -4px 0 0;
+  font: 400 11px var(--mono);
+  color: var(--dim);
+}
+
+/* ---------- expanded solve history (§12.6) ---------- */
+
+.rec-detail {
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
+  padding: 4px 14px 14px 33px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rec-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rec-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 74px;
+  padding: 7px 11px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.rec-stat.pb {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.rec-stat-label {
+  font: 400 9px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--dim);
+}
+
+.rec-stat-value {
+  font: 700 15px var(--mono);
+  color: var(--ink);
+}
+
+.rec-stat.pb .rec-stat-value {
+  color: var(--accent);
+}
+
+.rec-spark-wrap {
+  margin: 0;
+  padding: 10px 12px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.rec-spark {
+  display: block;
+  width: 100%;
+  height: 44px;
+}
+
+.rec-spark-area {
+  fill: var(--accent-soft);
+  stroke: none;
+}
+
+.rec-spark-line {
+  fill: none;
+  stroke: var(--dim);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.rec-spark-best {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 2;
+}
+
+.rec-spark-cap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 6px;
+  font: 400 9px var(--mono);
+  color: var(--faint);
+}
+
+/* Legend swatch: the same dashed accent rule the chart marks the best with. */
+.rec-spark-key {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--accent);
+}
+
+.rec-spark-key::before {
+  content: '';
+  width: 11px;
+  border-top: 1.5px dashed var(--accent);
+}
+
+.rec-solves {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 268px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.rec-solve {
+  display: grid;
+  grid-template-columns: 34px 58px 1fr auto;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 11px;
+  border-bottom: 1px dashed var(--border);
+  font: 500 11px var(--mono);
+}
+
+.rec-solve:last-child {
+  border-bottom: none;
+}
+
+.rec-solve.best {
+  background: var(--accent-soft);
+}
+
+.rec-solve-i {
+  color: var(--faint);
+}
+
+.rec-solve-ms {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.rec-solve.best .rec-solve-ms {
+  color: var(--accent);
+}
+
+.rec-solve-meta {
+  color: var(--dim);
+}
+
+.rec-solve-at {
+  color: var(--faint);
+  font-size: 10px;
+}
+
+.rec-empty {
+  margin: 0;
+  font: 400 11px var(--mono);
+  color: var(--dim);
+  max-width: 62ch;
+  line-height: 1.6;
+}
+
 /* ---------- narrow layouts ---------- */
 
 @media (max-width: 720px) {
@@ -689,7 +896,7 @@
 }
 
 @media (max-width: 560px) {
-  /* If a long case name ever pushes the 5-column table past the viewport,
+  /* If a long case name ever pushes the 6-column table past the viewport,
      the card scrolls inside itself — never the page body. */
   .rec-card {
     overflow-x: auto;
@@ -698,6 +905,19 @@
   .rec-row {
     font-size: 11px;
     padding: 9px 8px;
+  }
+
+  .rec-detail {
+    padding-left: 14px;
+  }
+
+  /* The date is the first thing to go when a solve row gets tight. */
+  .rec-solve {
+    grid-template-columns: 30px 52px 1fr;
+  }
+
+  .rec-solve-at {
+    display: none;
   }
 }
 
