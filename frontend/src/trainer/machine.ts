@@ -6,17 +6,22 @@
  * pointer press on the timer panel drives everything via press (`down`) and
  * release (`up`) edges:
  *
- *   random: idle --down--> recognition --up--> execution --down--> done --down--> (next) idle
+ *   random: idle --down--> recognition --up--> execution --down--> idle
  *           You HOLD the key to recognize (recognition runs while held) and
  *           RELEASE to start solving; press again to stop.
  *
- *   grind:  idle --down--> armed --up--> execution --down--> done --down--> (next) idle
+ *   grind:  idle --down--> armed --up--> execution --down--> idle
  *           Hold to arm (nothing runs), release to start the timer; press to stop.
+ *
+ * The stop press returns straight to `idle` — the drill re-arms itself, so the
+ * next solve needs no extra keypress. The frozen splits SURVIVE that return
+ * (they are only cleared when the next solve actually starts), which is what
+ * keeps the just-finished time on screen while the trainer waits.
  *
  * Only recognition ends on the RELEASE edge; every other transition fires on
  * PRESS and ignores the matching release, so one physical press-release never
- * advances two steps unintentionally (e.g. the release after the "stop" press
- * lands harmlessly in `done`, and the release after "next" lands in `idle`).
+ * advances two steps unintentionally (the release after the "stop" press lands
+ * harmlessly in `idle`, which ignores releases).
  *
  * Timestamps are passed in (`performance.now()` in the app, fake numbers in
  * tests); the reducer freezes each split when the phase it times ends. Live
@@ -25,7 +30,7 @@
 
 import type { TrainerMode } from './types'
 
-export type TrainerPhase = 'idle' | 'armed' | 'recognition' | 'execution' | 'done'
+export type TrainerPhase = 'idle' | 'armed' | 'recognition' | 'execution'
 
 /** A press (`down`) or release (`up`) of Space / the timer panel. */
 export type TrainerInput = 'down' | 'up'
@@ -42,13 +47,15 @@ export interface TrainerMachine {
 }
 
 /** What a step did — the component maps these to side effects. */
-export type StepEvent =
-  | 'none'
-  | 'startRecognition'
-  | 'arm'
-  | 'startExecution'
-  | 'finish'
-  | 'next'
+export type StepEvent = 'none' | 'startRecognition' | 'arm' | 'startExecution' | 'finish'
+
+/**
+ * True when the machine is sitting in `idle` holding the splits of the solve
+ * that just ended (as opposed to a fresh, never-solved idle).
+ */
+export function justFinished(m: TrainerMachine): boolean {
+  return m.phase === 'idle' && m.execMs > 0
+}
 
 export function initialMachine(mode: TrainerMode): TrainerMachine {
   return { mode, phase: 'idle', phaseStart: null, recogMs: 0, execMs: 0 }
@@ -99,17 +106,13 @@ export function stepMachine(m: TrainerMachine, input: TrainerInput, now: number)
       }
 
     case 'execution':
-      // press stops the solve.
+      // press stops the solve and re-arms immediately; the frozen splits stay
+      // on the machine so the finished time keeps showing until the next solve.
       if (input !== 'down') return noop(m)
       return {
-        state: { ...m, phase: 'done', execMs: now - (m.phaseStart ?? now), phaseStart: null },
+        state: { ...m, phase: 'idle', execMs: now - (m.phaseStart ?? now), phaseStart: null },
         event: 'finish',
       }
-
-    case 'done':
-      // press loads the next scramble.
-      if (input !== 'down') return noop(m)
-      return { state: initialMachine(m.mode), event: 'next' }
   }
 }
 

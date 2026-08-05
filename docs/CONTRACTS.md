@@ -541,15 +541,25 @@ existing gap/border rendering). Router views:
 Header per README (logo→home, Train→setpick, Records→records with last-trained tab).
 
 ### 12.3 Trainer screen (random mode) — per README §7 + prototype copy
-Phases `idle → recognition → execution → done`; advance via Space (ignored in inputs) or
-tapping the timer panel. Hidden case until done. Hint copy (verbatim from prototype):
-idle "press SPACE / tap to start recognition" · recog "recognizing… SPACE / tap when you
-start turning" · exec "executing… SPACE / tap the instant you finish" · done "case added to
-your records ✓ — SPACE / tap for the next scramble". Cube stage: recognition = hidden
+Phases `idle → recognition → execution → idle`; advance via Space (ignored in inputs) or
+tapping the timer panel.
+While the solve timer runs, **any key** stops it (bare modifiers and browser chords excluded);
+only Space produces the release edge, so a non-Space stop leaves no stray `up`.
+The case is **never identified** — no name or preview is rendered in random mode, at any phase.
+Its **PB is never printed** either (no header PB chip, and the stage caption reads
+"your best solve plays here as a ghost · beat it" with no number): an exact best time would
+narrow down which case is on screen. The PB still scales the ghost, it is just not displayed.
+The stop press ends the solve and **immediately re-arms**: the next scramble is fetched and the
+trainer returns to `idle` with no extra keypress, while the finished RECOG/EXEC splits stay
+frozen on screen until the next solve starts.
+Hint copy: idle "hold SPACE (or press the timer) to recognize, release to start solving" ·
+recog "recognizing… release to start solving" · exec "solving… hit any key the instant you
+finish" · idle-after-a-solve "logged ✓ · next scramble ready · hold SPACE to go again".
+Cube stage: recognition = hidden
 ("?" + "cube hidden during recognition"); execution = ghost (real CubeView playing the
 **current scramble's `solution`**, tween-scaled so the whole playback lasts the PB **total**;
 caption "plays your {pb}s solve — beat it"; if no PB: "set a PB and the ghost appears here");
-done = ghost stops/hides. Session strip: last 6 totals, PBs green. Timer format
+finishing stops/hides the ghost. Session strip: last 6 totals, PBs green. Timer format
 `(ms/1000).toFixed(2)`.
 
 ### 12.4 Grind mode (targeted drilling) — NEW UI, designed here
@@ -565,13 +575,19 @@ done = ghost stops/hides. Session strip: last 6 totals, PBs green. Timer format
   trainer grind mode for that case. ZBLL loads once and filters client-side.
 - **Trainer (grind variant)**: same layout as random with these differences — header shows
   the **case name + preview openly** (chip "grinding" in yellow `#F0C64A` instead of the set
-  chip); **no RECOG pill** — a single EXEC split pill; phases `idle → execution → done`
-  (Space/tap: start, stop, next scramble for the SAME case); the big timer is yellow-on-ink
+  chip); **no RECOG pill** — a single EXEC split pill; phases `idle → armed → execution → idle`
+  (hold to arm, release to start, press to stop); the big timer is yellow-on-ink
   throughout; cube stage shows the **case state** on CubeView while idle (user can check
   their setup), and the ghost (scaled to PB **exec**) during execution; hint copy: idle
-  "press SPACE / tap to start the timer" · exec "executing… SPACE / tap the instant you
-  finish" · done "logged ✓ — SPACE / tap for a new scramble of this case". Each `done→idle`
-  fetches a **fresh scramble for the same case_id** (variety per §11.2).
+  "hold SPACE (or the timer), then release to start the timer" · armed "release to start…" ·
+  exec "solving… hit any key the instant you finish" · idle-after-a-rep "logged ✓ · hold SPACE
+  for the next rep".
+  The header **keeps** its PB chip and the caption its "plays your {pb}s solve · beat it" —
+  the case is named openly here, so the time gives nothing away.
+  The stop press re-arms immediately so reps chain without an extra keypress, and the frozen
+  EXEC split stays on screen until the next rep starts.
+  The scramble is fetched **once per case**: grinding one case means one fixed setup, so it is
+  never re-drawn between reps.
 - **Records interplay**: grind results update **only** `exec` best and `n` (execution splits
   are comparable across modes); `recog`/`total` bests are set only by random mode. Records
   table renders "—" for missing recog/total exactly as for untrained cases.
@@ -583,9 +599,34 @@ OCLL family with collapsible sections — 493 rows must stay usable). Persisted 
 (min per field independently; `recog`/`total` may be absent for grind-only cases). Also
 `localStorage["alglabs.lastset.v1"]` for the Records default tab. Never clear other keys.
 
-### 12.6 Tests (T18)
+### 12.6 Solve history
+Every solve is logged, not just the bests.
+Persisted **under its own key**, `localStorage["alglabs.solves.v1"] = {[setKey]: {[caseId]:
+Solve[]}}`, oldest first, where `Solve = {recog?, exec, at}`.
+Separate from the records key on purpose: records are read on every scramble, history is a
+much larger append-only log only the Records screen reads, so a corrupt or over-quota history
+can never take the PBs down with it.
+`recog` is present exactly for random solves, so `recog === undefined` identifies a grind rep
+and the total/recognition stats are computed over random solves alone rather than mixing the
+two.
+Capped at **500 solves per case** (oldest fall off first), which keeps a fully-drilled ZBLL
+history far inside the ~5MB localStorage budget.
+
+Surfaced in the Records screen: an **Avg** column (mean execution over every logged solve, the
+one split both modes time), and every case with records **expands** to its history.
+The expanded panel is a stat strip (logged · avg exec · best exec · avg recog · avg total ·
+best total, PB-tinted where it is a best), a sparkline of execution oldest → newest with the
+fastest solve marked and the fastest time at the TOP so improvement reads as a rising line,
+and every individual solve newest first (`#n`, headline time, the splits or a "grind" tag,
+date), the fastest row tinted.
+Cases whose bests predate history logging expand to a note instead of a solve list; their Avg
+cell reads "—".
+The panel's "logged" count can therefore be lower than the row's lifetime `n`.
+
+### 12.7 Tests (T18)
 Vitest: records store (merge rules incl. grind-only exec updates, PB detection, localStorage
-round-trip, never touching foreign keys); trainer state machine as a pure reducer (both
-modes' phase transitions, split freezing, session strip); preview-grid mapping from the §11.3
-payload. Existing T15/T16 updated for the muted palette. `npm run test` + `npm run build`
-green; backend suite stays green.
+round-trip, never touching foreign keys); solve history (append order + per-case cap, stats
+across mixed modes, load validation dropping malformed entries); trainer state machine as a
+pure reducer (both modes' phase transitions, split freezing, session strip); preview-grid
+mapping from the §11.3 payload. Existing T15/T16 updated for the muted palette. `npm run test`
++ `npm run build` green; backend suite stays green.

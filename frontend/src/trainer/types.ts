@@ -14,7 +14,7 @@ export const SET_KEYS: readonly SetKey[] = ['oll', 'pll', 'coll', 'zbll', 'vls']
 
 /**
  * Drill modes (§12.3/§12.4): `random` = recognition + execution with the case
- * hidden until done; `grind` = one chosen case, execution only.
+ * never named; `grind` = one chosen case, execution only.
  */
 export type TrainerMode = 'random' | 'grind'
 
@@ -97,8 +97,8 @@ export interface TrainerCase {
 
 /**
  * GET /api/trainer/scramble. `solution` is the inverse of `scramble` and
- * drives the ghost CubeView playback. In random mode `name`/`preview` MUST
- * NOT be rendered before the done phase (§11.4 / design ⚠️ #2).
+ * drives the ghost CubeView playback. In random mode `name`/`preview` MUST NOT
+ * be rendered at all — the case is never identified (§11.4 / design ⚠️ #2).
  */
 export interface TrainerScramble {
   set: SetKey

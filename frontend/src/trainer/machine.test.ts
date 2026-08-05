@@ -5,6 +5,7 @@ import {
   fmtMs,
   initialMachine,
   isRunning,
+  justFinished,
   liveSplits,
   pushSession,
   stepMachine,
@@ -13,7 +14,7 @@ import {
 } from './machine'
 
 describe('random mode: hold to recognize, release to solve, press to stop', () => {
-  it('walks idle -down-> recognition -up-> execution -down-> done -down-> idle', () => {
+  it('walks idle -down-> recognition -up-> execution -down-> idle (auto re-arm)', () => {
     const idle = initialMachine('random')
     expect(idle).toEqual({
       mode: 'random',
@@ -41,37 +42,40 @@ describe('random mode: hold to recognize, release to solve, press to stop', () =
     expect(b.state.phaseStart).toBe(1500)
     expect(liveSplits(b.state, 2100)).toEqual({ recog: 500, exec: 600, total: 1100 })
 
-    // press: execution → done, execution split frozen, total = recog + exec
+    // press: execution → idle, execution split frozen, total = recog + exec.
+    // The drill re-arms itself — no extra press needed for the next solve.
     const c = stepMachine(b.state, 'down', 2400)
     expect(c.event).toBe('finish')
-    expect(c.state.phase).toBe('done')
+    expect(c.state.phase).toBe('idle')
     expect(c.state.execMs).toBe(900)
     expect(c.state.phaseStart).toBeNull()
     expect(isRunning(c.state)).toBe(false)
+    expect(justFinished(c.state)).toBe(true)
+    // the finished splits stay readable for as long as the user waits
     expect(liveSplits(c.state, 99999)).toEqual({ recog: 500, exec: 900, total: 1400 })
 
-    // press: done → idle (component fetches the next scramble on this event)
+    // the very next press starts the next solve directly
     const d = stepMachine(c.state, 'down', 3000)
-    expect(d.event).toBe('next')
-    expect(d.state).toEqual(initialMachine('random'))
+    expect(d.event).toBe('startRecognition')
+    expect(d.state.phase).toBe('recognition')
+    expect(justFinished(d.state)).toBe(false)
   })
 
-  it('ignores the release that follows a stop/next press (no double-advance)', () => {
+  it('ignores the release that follows the stop press (no double-advance)', () => {
     let m = initialMachine('random')
     m = stepMachine(m, 'down', 0).state // recognition
     m = stepMachine(m, 'up', 100).state // execution
-    const stopped = stepMachine(m, 'down', 300) // done
+    const stopped = stepMachine(m, 'down', 300) // → idle, re-armed
     expect(stopped.event).toBe('finish')
-    // the physical release of that stop press lands in `done` and does nothing
+    // the physical release of that stop press lands in `idle` and does nothing
     const strayUp = stepMachine(stopped.state, 'up', 320)
     expect(strayUp.event).toBe('none')
     expect(strayUp.state).toBe(stopped.state)
-    // press → next (idle); its release lands in idle and does nothing
-    const next = stepMachine(stopped.state, 'down', 500)
-    expect(next.event).toBe('next')
-    const strayUp2 = stepMachine(next.state, 'up', 520)
-    expect(strayUp2.event).toBe('none')
-    expect(strayUp2.state.phase).toBe('idle')
+  })
+
+  it('a fresh idle is not "just finished"', () => {
+    expect(justFinished(initialMachine('random'))).toBe(false)
+    expect(justFinished(initialMachine('grind'))).toBe(false)
   })
 
   it('idle ignores a release (stray keyup with no keydown)', () => {
@@ -87,10 +91,10 @@ describe('random mode: hold to recognize, release to solve, press to stop', () =
       ['down', 0],
       ['up', 100],
       ['down', 250],
-      ['down', 300],
     ] as [TrainerInput, number][]) {
-      m = stepMachine(m, inp, t).state // full solve + next
+      m = stepMachine(m, inp, t).state // one full solve
     }
+    expect(m.execMs).toBeGreaterThan(0)
     const restarted = stepMachine(m, 'down', 400).state // idle → recognition again
     expect(restarted.recogMs).toBe(0)
     expect(restarted.execMs).toBe(0)
@@ -99,7 +103,7 @@ describe('random mode: hold to recognize, release to solve, press to stop', () =
 })
 
 describe('grind mode: hold to arm, release to start, press to stop (§12.4)', () => {
-  it('walks idle -down-> armed -up-> execution -down-> done -down-> idle', () => {
+  it('walks idle -down-> armed -up-> execution -down-> idle (auto re-arm)', () => {
     const idle = initialMachine('grind')
 
     // press: idle → armed, NO timer running yet
@@ -118,17 +122,19 @@ describe('grind mode: hold to arm, release to start, press to stop (§12.4)', ()
     expect(b.state.phaseStart).toBe(800)
     expect(liveSplits(b.state, 1100)).toEqual({ recog: 0, exec: 300, total: 300 })
 
-    // press: execution → done, recognition never times
+    // press: execution → idle, recognition never times
     const c = stepMachine(b.state, 'down', 2300)
     expect(c.event).toBe('finish')
-    expect(c.state.phase).toBe('done')
+    expect(c.state.phase).toBe('idle')
     expect(c.state.recogMs).toBe(0)
     expect(c.state.execMs).toBe(1500)
+    expect(justFinished(c.state)).toBe(true)
     expect(liveSplits(c.state, 9999)).toEqual({ recog: 0, exec: 1500, total: 1500 })
 
+    // next press arms the next rep straight away, clearing the shown split
     const d = stepMachine(c.state, 'down', 2500)
-    expect(d.event).toBe('next')
-    expect(d.state).toEqual(initialMachine('grind'))
+    expect(d.event).toBe('arm')
+    expect(d.state).toEqual({ ...initialMachine('grind'), phase: 'armed' })
   })
 
   it('armed ignores an extra press; only release starts the timer', () => {
